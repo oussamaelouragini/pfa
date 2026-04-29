@@ -37,7 +37,7 @@ const verifyJWT = (req: Request, res: Response, next: NextFunction): void => {
     res.status(401).json({ message: 'Unauthorized' });
     return;
   }
-  const secret = process.env.ACCESS_TOKEN;
+  const secret = process.env.ACCESS_OTP_SECRET;
   if (!secret) {
     res.status(500).json({ message: 'Server misconfiguration' });
     return;

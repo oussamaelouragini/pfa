@@ -1,15 +1,17 @@
 import mongoose from 'mongoose';
 export declare const Category: mongoose.Model<{
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
 } & mongoose.DefaultTimestampProps, {}, {}, {
     id: string;
 }, mongoose.Document<unknown, {}, {
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
@@ -18,8 +20,9 @@ export declare const Category: mongoose.Model<{
 }, {
     timestamps: true;
 }> & Omit<{
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
@@ -32,14 +35,16 @@ export declare const Category: mongoose.Model<{
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, {
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
@@ -48,8 +53,9 @@ export declare const Category: mongoose.Model<{
 }, mongoose.MergeType<mongoose.DefaultSchemaOptions, {
     timestamps: true;
 }>> & Omit<{
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
@@ -60,8 +66,9 @@ export declare const Category: mongoose.Model<{
 }, "id"> & {
     id: string;
 }, unknown, {
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;
@@ -72,8 +79,9 @@ export declare const Category: mongoose.Model<{
 } & {
     __v: number;
 }>, {
-    name: string;
     userId: mongoose.Types.ObjectId;
+    type: "income" | "expense";
+    name: string;
     isDefault: boolean;
     icon?: string | null;
     color?: string | null;

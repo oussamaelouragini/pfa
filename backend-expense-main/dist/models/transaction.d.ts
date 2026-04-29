@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 export declare const Transaction: mongoose.Model<{
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -10,9 +10,9 @@ export declare const Transaction: mongoose.Model<{
 } & mongoose.DefaultTimestampProps, {}, {}, {
     id: string;
 }, mongoose.Document<unknown, {}, {
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -22,9 +22,9 @@ export declare const Transaction: mongoose.Model<{
 }, {
     timestamps: true;
 }> & Omit<{
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -38,17 +38,17 @@ export declare const Transaction: mongoose.Model<{
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any, any>, {}, {}, {}, {}, {
     timestamps: true;
 }, {
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
     note?: string | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, {
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -58,9 +58,9 @@ export declare const Transaction: mongoose.Model<{
 }, mongoose.MergeType<mongoose.DefaultSchemaOptions, {
     timestamps: true;
 }>> & Omit<{
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -72,9 +72,9 @@ export declare const Transaction: mongoose.Model<{
 }, "id"> & {
     id: string;
 }, unknown, {
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;
@@ -86,9 +86,9 @@ export declare const Transaction: mongoose.Model<{
 } & {
     __v: number;
 }>, {
-    type: "expense" | "income";
-    date: NativeDate;
     userId: mongoose.Types.ObjectId;
+    date: NativeDate;
+    type: "income" | "expense";
     amount: number;
     isRecurring: boolean;
     categoryId?: mongoose.Types.ObjectId | null;

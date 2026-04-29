@@ -10,6 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const transRoute_1 = __importDefault(require("./routes/transRoute"));
 const goalRoutes_1 = __importDefault(require("./routes/goalRoutes"));
+const categoryRoutes_1 = __importDefault(require("./routes/categoryRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = parseInt(process.env.DB_PORT || "5000", 10);
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes_1.default);
 app.use("/transactions", transRoute_1.default);
 app.use("/goal", goalRoutes_1.default);
+app.use("/categories", categoryRoutes_1.default);
 mongoose_1.default.connection.once("open", () => {
     console.log("Connected to database");
     app.listen(PORT, "0.0.0.0", () => {
