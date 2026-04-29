@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import transaction from "./routes/transRoute";
 import goalRoutes from "./routes/goalRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
 dotenv.config();
 
 const app = express();
@@ -30,6 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/auth", authRoutes);
 app.use("/transactions", transaction);
 app.use("/goal", goalRoutes);
+app.use("/categories", categoryRoutes);
 mongoose.connection.once("open", () => {
   console.log("Connected to database");
   app.listen(PORT, "0.0.0.0", () => {
