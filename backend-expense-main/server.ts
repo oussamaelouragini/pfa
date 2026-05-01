@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:8081", "http://192.168.1.102:8081"], // Add your machine IP
+    origin: ["http://localhost:8081", "http://192.168.1.192:8081"],
     credentials: true,
   }),
 );

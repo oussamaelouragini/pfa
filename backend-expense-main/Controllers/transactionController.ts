@@ -140,9 +140,11 @@ export const createTransaction = async (req: Request, res: Response) => {
 
     const saved = await transaction.save();
 
+    const populated = await Transaction.findById(saved._id).populate("categoryId", "name");
+
     res.status(201).json({
       message: "Transaction created",
-      data: saved,
+      data: populated,
     });
   } catch (error: any) {
     console.error("❌ Create transaction error:", error);
