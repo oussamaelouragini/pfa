@@ -53,13 +53,29 @@ export const register = async (
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPass
     });
 
-    return res.status(201).json({ message: 'User created successfully' });
+    const id = newUser._id.toString();
+    const accessToken = signAccessToken(id, newUser.email);
+    const refreshToken = signRefreshToken(id, newUser.email);
+
+    res.cookie('jwt', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(201).json({
+      message: 'User created successfully',
+      accessToken,
+      id,
+      email: newUser.email,
+      name: newUser.name
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
@@ -97,7 +113,7 @@ export const login = async (
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json({ accessToken, id, email: foundUser.email });
+    return res.status(200).json({ accessToken, id, email: foundUser.email, name: foundUser.name });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
