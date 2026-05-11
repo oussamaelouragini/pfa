@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/users';
+import { Category } from '../models/categorie';
 
 interface RegisterBody {
   name: string;
@@ -35,6 +36,28 @@ const signRefreshToken = (id: string, email: string): string =>
     { expiresIn: '7d' }
   );
 
+const DEFAULT_CATEGORIES = [
+  { name: 'Shopping', icon: 'bag-outline', color: '#3B5BDB', type: 'expense' as const },
+  { name: 'Food', icon: 'restaurant-outline', color: '#F59E0B', type: 'expense' as const },
+  { name: 'Transport', icon: 'car-outline', color: '#3B82F6', type: 'expense' as const },
+  { name: 'Rent', icon: 'home-outline', color: '#22C55E', type: 'expense' as const },
+  { name: 'Health', icon: 'medical-outline', color: '#F43F5E', type: 'expense' as const },
+  { name: 'Salary', icon: 'cash-outline', color: '#16A34A', type: 'income' as const },
+];
+
+const seedDefaultCategories = async (userId: string) => {
+  try {
+    const existing = await Category.countDocuments({ userId });
+    if (existing === 0) {
+      await Category.insertMany(
+        DEFAULT_CATEGORIES.map((cat) => ({ ...cat, userId, isDefault: true }))
+      );
+    }
+  } catch (err) {
+    console.error('Error seeding default categories:', err);
+  }
+};
+
 export const register = async (
   req: Request<{}, {}, RegisterBody>,
   res: Response
@@ -58,6 +81,8 @@ export const register = async (
       email,
       password: hashedPass
     });
+
+    await seedDefaultCategories(newUser._id.toString());
 
     const id = newUser._id.toString();
     const accessToken = signAccessToken(id, newUser.email);

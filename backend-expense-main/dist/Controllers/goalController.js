@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateGoal = exports.createGoal = exports.getGoals = void 0;
+exports.deleteGoal = exports.updateGoal = exports.createGoal = exports.getGoals = void 0;
 const goal_1 = require("../models/goal");
-// GET /api/goals
 const getGoals = async (req, res) => {
     try {
         const userId = req.user?.id;
@@ -10,7 +9,9 @@ const getGoals = async (req, res) => {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const goals = await goal_1.Goal.find({ userId }).sort({ createdAt: -1 });
+        const goals = await goal_1.Goal.find({ userId })
+            .populate("category", "name icon color")
+            .sort({ createdAt: -1 });
         res.status(200).json({
             success: true,
             count: goals.length,
@@ -22,7 +23,6 @@ const getGoals = async (req, res) => {
     }
 };
 exports.getGoals = getGoals;
-// POST /api/goals
 const createGoal = async (req, res) => {
     try {
         const userId = req.user?.id;
@@ -30,17 +30,26 @@ const createGoal = async (req, res) => {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const { title, targetAmount, imageUrl, deadline } = req.body;
+        const { name, duration, frequency, category, target } = req.body;
+        if (!name || !duration || !frequency || !category || !target) {
+            res.status(400).json({
+                success: false,
+                message: "All fields are required: name, duration, frequency, category, target"
+            });
+            return;
+        }
         const newGoal = await goal_1.Goal.create({
             userId,
-            title,
-            targetAmount,
-            imageUrl,
-            deadline
+            name,
+            duration,
+            frequency,
+            category,
+            target
         });
+        const populatedGoal = await goal_1.Goal.findById(newGoal._id).populate("category", "name icon color");
         res.status(201).json({
             success: true,
-            data: newGoal
+            data: populatedGoal
         });
     }
     catch (error) {
@@ -51,7 +60,6 @@ const createGoal = async (req, res) => {
     }
 };
 exports.createGoal = createGoal;
-// PUT /api/goals/:id
 const updateGoal = async (req, res) => {
     try {
         const userId = req.user?.id;
@@ -61,21 +69,14 @@ const updateGoal = async (req, res) => {
             return;
         }
         const updates = req.body;
-        // Allowed fields only
-        const allowedFields = [
-            "title",
-            "targetAmount",
-            "imageUrl",
-            "deadline",
-            "status"
-        ];
+        const allowedFields = ["name", "duration", "frequency", "category", "target"];
         const filteredUpdates = {};
         Object.keys(updates).forEach((key) => {
             if (allowedFields.includes(key)) {
                 filteredUpdates[key] = updates[key];
             }
         });
-        const goal = await goal_1.Goal.findOneAndUpdate({ _id: id, userId }, filteredUpdates, { new: true, runValidators: true });
+        const goal = await goal_1.Goal.findOneAndUpdate({ _id: id, userId }, filteredUpdates, { new: true, runValidators: true }).populate("category", "name icon color");
         if (!goal) {
             res.status(404).json({
                 success: false,
@@ -96,4 +97,33 @@ const updateGoal = async (req, res) => {
     }
 };
 exports.updateGoal = updateGoal;
+const deleteGoal = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        const { id } = req.params;
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const goal = await goal_1.Goal.findOneAndDelete({ _id: id, userId });
+        if (!goal) {
+            res.status(404).json({
+                success: false,
+                message: "Goal not found"
+            });
+            return;
+        }
+        res.status(200).json({
+            success: true,
+            message: "Goal deleted successfully"
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete goal"
+        });
+    }
+};
+exports.deleteGoal = deleteGoal;
 //# sourceMappingURL=goalController.js.map

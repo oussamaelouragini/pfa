@@ -10,5 +10,6 @@ const router = (0, express_1.Router)();
 router.get("/goals", JWT_1.default, goalController_1.getGoals);
 router.post("/createGoals", JWT_1.default, goalController_1.createGoal);
 router.put("/goals/:id", JWT_1.default, goalController_1.updateGoal);
+router.delete("/goals/:id", JWT_1.default, goalController_1.deleteGoal);
 exports.default = router;
 //# sourceMappingURL=goalRoutes.js.map

@@ -76,11 +76,6 @@ export const updateCategory = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    if (category.isDefault) {
-      res.status(403).json({ message: "Cannot update default category" });
-      return;
-    }
-
     if (name) category.name = name;
     if (icon) category.icon = icon;
     if (color) category.color = color;
@@ -108,11 +103,6 @@ export const deleteCategory = async (req: Request, res: Response): Promise<void>
 
     if (!category) {
       res.status(404).json({ message: "Category not found" });
-      return;
-    }
-
-    if (category.isDefault) {
-      res.status(403).json({ message: "Cannot delete default category" });
       return;
     }
 

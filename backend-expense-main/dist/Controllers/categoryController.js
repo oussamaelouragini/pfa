@@ -65,10 +65,6 @@ const updateCategory = async (req, res) => {
             res.status(404).json({ message: "Category not found" });
             return;
         }
-        if (category.isDefault) {
-            res.status(403).json({ message: "Cannot update default category" });
-            return;
-        }
         if (name)
             category.name = name;
         if (icon)
@@ -95,10 +91,6 @@ const deleteCategory = async (req, res) => {
         const category = await categorie_1.Category.findOne({ _id: id, userId });
         if (!category) {
             res.status(404).json({ message: "Category not found" });
-            return;
-        }
-        if (category.isDefault) {
-            res.status(403).json({ message: "Cannot delete default category" });
             return;
         }
         await category.deleteOne();
