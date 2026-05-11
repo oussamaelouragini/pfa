@@ -1,37 +1,31 @@
 import mongoose from 'mongoose';
 export declare const Goal: mongoose.Model<{
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps, {}, {}, {
     id: string;
 }, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps, {
     id: string;
 }, {
     timestamps: true;
 }> & Omit<{
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps & {
     _id: mongoose.Types.ObjectId;
 } & {
@@ -42,35 +36,29 @@ export declare const Goal: mongoose.Model<{
     timestamps: true;
 }, {
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps, {
     id: string;
 }, mongoose.MergeType<mongoose.DefaultSchemaOptions, {
     timestamps: true;
 }>> & Omit<{
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
 } & mongoose.DefaultTimestampProps & {
     _id: mongoose.Types.ObjectId;
 } & {
@@ -79,13 +67,11 @@ export declare const Goal: mongoose.Model<{
     id: string;
 }, unknown, {
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {
@@ -94,13 +80,11 @@ export declare const Goal: mongoose.Model<{
     __v: number;
 }>, {
     userId: mongoose.Types.ObjectId;
-    title: string;
-    targetAmount: number;
-    savedAmount: number;
-    status: "active" | "completed" | "paused";
-    imageUrl?: string | null;
-    deadline?: NativeDate | null;
-    aiAnalysis?: any;
+    name: string;
+    duration: string;
+    frequency: string;
+    category: mongoose.Types.ObjectId;
+    target: number;
     createdAt: NativeDate;
     updatedAt: NativeDate;
 } & {

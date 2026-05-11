@@ -114,9 +114,10 @@ const createTransaction = async (req, res) => {
             isRecurring: isRecurring || false,
         });
         const saved = await transaction.save();
+        const populated = await transaction_1.Transaction.findById(saved._id).populate("categoryId", "name");
         res.status(201).json({
             message: "Transaction created",
-            data: saved,
+            data: populated,
         });
     }
     catch (error) {

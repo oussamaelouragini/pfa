@@ -34,22 +34,14 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Goal = void 0;
-// modules/goals/goal.model.ts
 const mongoose_1 = __importStar(require("mongoose"));
 const GoalSchema = new mongoose_1.Schema({
     userId: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    title: { type: String, required: true, maxlength: 200 },
-    targetAmount: { type: Number, required: true, min: 0 },
-    savedAmount: { type: Number, default: 0, min: 0 },
-    imageUrl: { type: String },
-    deadline: { type: Date },
-    status: { type: String, enum: ['active', 'completed', 'paused'], default: 'active' },
-    aiAnalysis: { type: mongoose_1.Schema.Types.Mixed, default: null }, // AI Insights payload
+    name: { type: String, required: true, maxlength: 200 },
+    duration: { type: String, required: true },
+    frequency: { type: String, required: true },
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Category', required: true },
+    target: { type: Number, required: true, min: 0 },
 }, { timestamps: true });
-// Virtual: progression percentage
-GoalSchema.virtual('progress').get(function () {
-    return ((this.savedAmount / this.targetAmount) * 100).toFixed(1);
-});
-GoalSchema.set('toJSON', { virtuals: true });
 exports.Goal = mongoose_1.default.model('Goal', GoalSchema);
 //# sourceMappingURL=goal.js.map

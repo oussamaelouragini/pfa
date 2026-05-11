@@ -7,8 +7,28 @@ exports.logout = exports.refresh = exports.login = exports.register = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const users_1 = require("../models/users");
+const categorie_1 = require("../models/categorie");
 const signAccessToken = (id, email) => jsonwebtoken_1.default.sign({ userInfo: { id, email } }, process.env.ACCESS_OTP_SECRET, { expiresIn: '1h' });
 const signRefreshToken = (id, email) => jsonwebtoken_1.default.sign({ userInfo: { id, email } }, process.env.REFRESH_OTP_SECRET, { expiresIn: '7d' });
+const DEFAULT_CATEGORIES = [
+    { name: 'Shopping', icon: 'bag-outline', color: '#3B5BDB', type: 'expense' },
+    { name: 'Food', icon: 'restaurant-outline', color: '#F59E0B', type: 'expense' },
+    { name: 'Transport', icon: 'car-outline', color: '#3B82F6', type: 'expense' },
+    { name: 'Rent', icon: 'home-outline', color: '#22C55E', type: 'expense' },
+    { name: 'Health', icon: 'medical-outline', color: '#F43F5E', type: 'expense' },
+    { name: 'Salary', icon: 'cash-outline', color: '#16A34A', type: 'income' },
+];
+const seedDefaultCategories = async (userId) => {
+    try {
+        const existing = await categorie_1.Category.countDocuments({ userId });
+        if (existing === 0) {
+            await categorie_1.Category.insertMany(DEFAULT_CATEGORIES.map((cat) => ({ ...cat, userId, isDefault: true })));
+        }
+    }
+    catch (err) {
+        console.error('Error seeding default categories:', err);
+    }
+};
 const register = async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -20,12 +40,27 @@ const register = async (req, res) => {
             return res.status(409).json({ message: 'Email already in use' });
         }
         const hashedPass = await bcrypt_1.default.hash(password, 10);
-        await users_1.User.create({
+        const newUser = await users_1.User.create({
             name,
             email,
             password: hashedPass
         });
-        return res.status(201).json({ message: 'User created successfully' });
+        await seedDefaultCategories(newUser._id.toString());
+        const id = newUser._id.toString();
+        const accessToken = signAccessToken(id, newUser.email);
+        const refreshToken = signRefreshToken(id, newUser.email);
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+        return res.status(201).json({
+            message: 'User created successfully',
+            accessToken,
+            id,
+            email: newUser.email,
+            name: newUser.name
+        });
     }
     catch (err) {
         console.error(err);
@@ -55,7 +90,7 @@ const login = async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
-        return res.status(200).json({ accessToken, id, email: foundUser.email });
+        return res.status(200).json({ accessToken, id, email: foundUser.email, name: foundUser.name });
     }
     catch (err) {
         console.error(err);
