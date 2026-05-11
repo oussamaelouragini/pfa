@@ -1,0 +1,335 @@
+// features/profile/components/ProfileScreen.styles.ts
+// ✅ Consistent with app design system — #3B5BDB blue
+
+import { StyleSheet } from "react-native";
+
+export const PC = {
+  primary: "#3B5BDB",
+  primaryDim: "#2D4ED8",
+  primaryLight: "#EEF2FF",
+  surface: "#F0F2F8",
+  surfaceCard: "#FFFFFF",
+  surfaceLow: "#E8EDF5",
+  onSurface: "#0F172A",
+  onVariant: "#64748B",
+  red: "#EF4444",
+  redLight: "#FEF2F2",
+  green: "#22C55E",
+  border: "#F1F5F9",
+};
+
+export const ps = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: PC.surface },
+  scroll: { flexGrow: 1, paddingBottom: 32 },
+
+  // ── Top Bar ──────────────────────────────────────────────────────────────────
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+    backgroundColor: PC.surface,
+  },
+  backBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  topBarTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: PC.onSurface,
+    letterSpacing: -0.3,
+  },
+  settingsBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // ── Avatar Section ────────────────────────────────────────────────────────────
+  avatarSection: {
+    alignItems: "center",
+    paddingTop: 16,
+    paddingBottom: 20,
+  },
+  avatarWrapper: {
+    position: "relative",
+    width: 110,
+    height: 110,
+    marginBottom: 14,
+  },
+  avatarCircle: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: PC.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "#fff",
+    shadowColor: PC.primary,
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
+  },
+  avatarImage: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+  },
+  verifiedBadge: {
+    position: "absolute",
+    bottom: 4,
+    right: 0,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: PC.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#fff",
+  },
+  userName: {
+    fontSize: 26,
+    fontWeight: "800",
+    color: PC.onSurface,
+    letterSpacing: -0.5,
+    marginBottom: 8,
+  },
+  memberBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: PC.primaryLight,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    gap: 5,
+  },
+  memberText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: PC.primary,
+    letterSpacing: 1.2,
+  },
+
+  // ── Edit Profile Button ───────────────────────────────────────────────────────
+  editBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: PC.surfaceCard,
+    borderRadius: 50,
+    paddingHorizontal: 28,
+    paddingVertical: 13,
+    marginTop: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
+  editBtnText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: PC.onSurface,
+  },
+
+  // ── Section Label ─────────────────────────────────────────────────────────────
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: PC.onVariant,
+    letterSpacing: 1.8,
+    paddingHorizontal: 20,
+    marginTop: 24,
+    marginBottom: 10,
+  },
+
+  // ── Info Card ─────────────────────────────────────────────────────────────────
+  infoCard: {
+    marginHorizontal: 16,
+    backgroundColor: PC.surfaceCard,
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  infoRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: PC.border,
+  },
+  infoIconWrapper: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  infoTextBlock: { flex: 1 },
+  infoLabel: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: PC.onVariant,
+    letterSpacing: 1.2,
+    marginBottom: 3,
+  },
+  infoValue: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: PC.onSurface,
+    lineHeight: 20,
+  },
+  infoChevron: {
+    opacity: 0.4,
+  },
+
+  // ── Notification Row ──────────────────────────────────────────────────────────
+  notifCard: {
+    marginHorizontal: 16,
+    backgroundColor: PC.surfaceCard,
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  notifRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  notifRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: PC.border,
+  },
+  notifIconWrapper: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  notifTextBlock: { flex: 1 },
+  notifLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: PC.onSurface,
+    marginBottom: 2,
+  },
+  notifDesc: { fontSize: 12, color: PC.onVariant },
+
+  // ── Toggle Switch ─────────────────────────────────────────────────────────────
+  toggle: {
+    width: 50,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: "center",
+    paddingHorizontal: 2,
+  },
+  toggleOn: { backgroundColor: PC.primary },
+  toggleOff: { backgroundColor: PC.surfaceLow },
+  toggleThumb: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
+  },
+  toggleThumbOn: { alignSelf: "flex-end" },
+  toggleThumbOff: { alignSelf: "flex-start" },
+
+  // ── Preferences Card ──────────────────────────────────────────────────────────
+  prefCard: {
+    marginHorizontal: 16,
+    backgroundColor: PC.surfaceCard,
+    borderRadius: 20,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  prefRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 14,
+  },
+  prefRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: PC.border,
+  },
+  prefIconWrapper: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  prefLabel: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "600",
+    color: PC.onSurface,
+  },
+  prefValueRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  prefValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: PC.onVariant,
+  },
+
+  // ── Log Out Button ────────────────────────────────────────────────────────────
+  logOutSection: { paddingHorizontal: 16, marginTop: 28 },
+  logOutBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: PC.redLight,
+    borderRadius: 20,
+    paddingVertical: 18,
+  },
+  logOutText: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: PC.red,
+    letterSpacing: 2,
+  },
+});
