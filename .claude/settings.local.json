@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(find \"c:/Users/deadx/OneDive/Desktop/project_oussema/pfa/backend-expense-main\" -maxdepth 1 -type f -name \"*.ts\" -o -name \".env*\" -o -name \"*.json\" | grep -v node_modules)",
+      "Read(//c/Users/deadx/OneDive/Desktop/project_oussema/pfa/**)",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\backend-expense-main\\\\ai\\\\tools\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\backend-expense-main\\\\services\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\services\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\hooks\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\components\\\\ai\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\screens\")"
+    ]
+  }
+}
