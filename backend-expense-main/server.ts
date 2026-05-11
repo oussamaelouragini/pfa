@@ -8,7 +8,6 @@ import goalRoutes from "./routes/goalRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import aiRoutes from "./routes/aiRoutes";
 dotenv.config();
-
 const app = express();
 const PORT = parseInt(process.env.DB_PORT || "5000", 10);
 const connectDB = require("./config/database");
