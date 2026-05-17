@@ -13,6 +13,7 @@ import { useColorScheme } from "@/core/hooks/use-color-scheme";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { CurrencyProvider } from "@/providers/CurrencyProvider";
 import { UserProvider } from "@/providers/UserProvider";
+import { startReminderNotifier } from "@/features/notifications/services/notificationService";
 import { useEffect } from "react";
 
 // Keep the splash screen visible until we're done loading
@@ -33,13 +34,17 @@ function RootLayoutNav() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    startReminderNotifier();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{ headerShown: false }}>
           {/* Auth screens */}
-          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="auth" />
           {/* Tab screens */}
           <Stack.Screen name="(tabs)" />
           <Stack.Screen

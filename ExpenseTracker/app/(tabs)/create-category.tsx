@@ -1,10 +1,11 @@
 // app/(tabs)/create-category.tsx
-// ✅ Create new category with icon picker and color selection
 
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import {
+  Alert,
   FlatList,
   SafeAreaView,
   ScrollView,
@@ -13,10 +14,12 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useCategoriesStore } from "@/features/transactions/store/categoriesStore";
 import type { Category } from "@/features/transactions/types/transaction.types";
+import Header from "@/core/components/Header";
 import ScreenWrapper from "@/core/components/ScreenWrapper";
 
 const ICON_COLLECTION = [
@@ -38,18 +41,35 @@ const COLOR_COLLECTION = [
 
 export default function CreateCategoryScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ source?: string }>();
+  const source = params.source;
+  const categories = useCategoriesStore((s) => s.categories);
   const addCategory = useCategoriesStore((s) => s.addCategory);
 
   const [name, setName] = useState("");
-  const [selectedIcon, setSelectedIcon] = useState("bag-outline");
-  const [selectedColor, setSelectedColor] = useState("#3B5BDB");
+  const [selectedIcon, setSelectedIcon] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      setName("");
+      setSelectedIcon("");
+      setSelectedColor("");
+      setIsCreating(false);
+    }, [])
+  );
+
+  const isFormValid = name.trim().length > 0 && selectedIcon && selectedColor;
+
+  const isDuplicate = name.trim().length > 0 && categories.some(
+    (c) => c.label.toLowerCase() === name.trim().toLowerCase()
+  );
+
   const handleCreate = async () => {
-    if (!name.trim()) return;
+    if (!isFormValid || isDuplicate) return;
 
     setIsCreating(true);
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
     const newCategory: Omit<Category, "id"> = {
       label: name.trim(),
@@ -60,48 +80,72 @@ export default function CreateCategoryScreen() {
 
     try {
       await addCategory(newCategory);
-      router.replace("/add-expense");
-    } catch (error) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      router.replace({
+        pathname: "/(tabs)/select-category",
+        params: { source: source || "goal" },
+      });
+    } catch (error: any) {
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to create category. Please try again."
+      );
       setIsCreating(false);
     }
+  };
+
+  const handleBack = () => {
+    router.replace({
+      pathname: "/(tabs)/select-category",
+      params: { source: source || "goal" },
+    });
   };
 
   return (
     <ScreenWrapper backgroundColor="#F0F2F8">
       <SafeAreaView style={styles.safe}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => router.replace("/select-category")}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="chevron-back" size={24} color="#0F172A" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Create Category</Text>
-          <View style={styles.placeholder} />
-        </View>
+        <Header
+          left={
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={handleBack}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="chevron-back" size={24} color="#0F172A" />
+            </TouchableOpacity>
+          }
+          title="Create Category"
+        />
 
         <ScrollView style={styles.form} showsVerticalScrollIndicator={false}>
           {/* Preview */}
           <View style={styles.previewSection}>
-            <View style={[styles.previewIcon, { backgroundColor: selectedColor + "20" }]}>
-              <Ionicons name={selectedIcon as any} size={32} color={selectedColor} />
+            <View style={[styles.previewIcon, { backgroundColor: selectedColor ? selectedColor + "20" : "#E2E8F0" }]}>
+              {selectedIcon ? (
+                <Ionicons name={selectedIcon as any} size={32} color={selectedColor || "#94A3B8"} />
+              ) : (
+                <Ionicons name="image-outline" size={28} color="#94A3B8" />
+              )}
             </View>
-            <Text style={styles.previewLabel}>{name || "Category Name"}</Text>
+            <Text style={[styles.previewLabel, !name && { color: "#94A3B8" }]}>
+              {name || "Category Name"}
+            </Text>
           </View>
 
           {/* Name Input */}
           <View style={styles.inputSection}>
             <Text style={styles.inputLabel}>CATEGORY NAME</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, isDuplicate && styles.inputError]}
               placeholder="Enter category name"
               placeholderTextColor="#94A3B8"
               value={name}
               onChangeText={setName}
               maxLength={20}
             />
+            {isDuplicate && (
+              <Text style={styles.errorText}>This category already exists</Text>
+            )}
           </View>
 
           {/* Icon Picker */}
@@ -124,7 +168,7 @@ export default function CreateCategoryScreen() {
                   <Ionicons
                     name={icon as any}
                     size={24}
-                    color={selectedIcon === icon ? selectedColor : "#64748B"}
+                    color={selectedIcon === icon ? selectedColor || "#3B5BDB" : "#64748B"}
                   />
                 </TouchableOpacity>
               ))}
@@ -163,13 +207,17 @@ export default function CreateCategoryScreen() {
           <TouchableOpacity
             style={[
               styles.createBtn,
-              !name.trim() && styles.createBtnDisabled,
+              (!isFormValid || isDuplicate) && styles.createBtnDisabled,
             ]}
             onPress={handleCreate}
-            disabled={!name.trim() || isCreating}
+            disabled={!isFormValid || isDuplicate || isCreating}
             activeOpacity={0.85}
           >
-            <Text style={styles.createBtnText}>Create Category</Text>
+            {isCreating ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.createBtnText}>Create Category</Text>
+            )}
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -179,13 +227,6 @@ export default function CreateCategoryScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F0F2F8" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
   backBtn: {
     width: 40,
     height: 40,
@@ -194,8 +235,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 18, fontWeight: "800", color: "#0F172A" },
-  placeholder: { width: 40 },
   form: { flex: 1, paddingHorizontal: 20 },
   previewSection: {
     alignItems: "center",
@@ -226,6 +265,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#0F172A",
+  },
+  inputError: {
+    borderWidth: 1,
+    borderColor: "#EF4444",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#EF4444",
+    marginTop: 6,
+    fontWeight: "600",
   },
   pickerSection: { marginBottom: 24 },
   iconGrid: {
@@ -269,6 +318,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: "center",
+    justifyContent: "center",
+    minHeight: 52,
   },
   createBtnDisabled: { backgroundColor: "#94A3B8" },
   createBtnText: { fontSize: 16, fontWeight: "700", color: "#fff" },

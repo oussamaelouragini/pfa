@@ -77,7 +77,7 @@ export const updateGoal = async (req: Request, res: Response): Promise<void> => 
 
     const updates = req.body;
 
-    const allowedFields = ["name", "duration", "frequency", "category", "target"];
+    const allowedFields = ["name", "duration", "frequency", "category", "target", "savedAmount"];
 
     const filteredUpdates: any = {};
     Object.keys(updates).forEach((key) => {

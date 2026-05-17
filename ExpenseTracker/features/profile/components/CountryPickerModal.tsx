@@ -163,7 +163,7 @@ const pickerStyles = {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: "80%",
+    maxHeight: 520,
     paddingBottom: Platform.OS === "ios" ? 34 : 16,
   },
   header: {

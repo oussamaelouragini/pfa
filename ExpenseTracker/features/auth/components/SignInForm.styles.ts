@@ -1,78 +1,52 @@
-// features/auth/components/SignInForm.styles.ts
-// ✅ Styles only — all StyleSheets are defined here
-
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   scroll: {
-    flexGrow: 1,
-    padding: 20,
+    padding: 24,
     paddingBottom: 40,
   },
 
-  // ── Top Bar ─────────────────────────────────
-  topBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-    paddingHorizontal: 4,
-  },
-  logoRow: {
+  // ── Brand ──────────────────────────────
+  brand: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 32,
   },
-  logoCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#3B5BDB",
+  logoWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "#E0E7FF",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 8,
+    marginRight: 10,
   },
-  logoText: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1E2A4A",
-    letterSpacing: 0.3,
-  },
-  backText: {
+  brandName: {
     fontSize: 14,
-    color: "#64748B",
+    fontWeight: "700",
+    letterSpacing: 1.5,
+    color: "#1E2A4A",
   },
 
-  // ── White Card ──────────────────────────────
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 28,
-    padding: 28,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-    marginBottom: 24,
-  },
-
-  // ── Headline ────────────────────────────────
+  // ── Headline ───────────────────────────
   headline: {
-    fontSize: 36,
+    fontSize: 34,
     fontWeight: "800",
     color: "#0F172A",
     marginBottom: 8,
     letterSpacing: -0.5,
-    textAlign: "center",
   },
   subtitle: {
     fontSize: 15,
     color: "#64748B",
-    textAlign: "center",
     marginBottom: 32,
     lineHeight: 22,
   },
 
-  // ── Form ────────────────────────────────────
+  // ── Form ───────────────────────────────
+  form: {
+    marginBottom: 28,
+  },
   label: {
     fontSize: 14,
     fontWeight: "600",
@@ -94,12 +68,16 @@ export const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8FAFF",
-    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
     paddingHorizontal: 14,
-    height: 56,
+    height: 54,
     borderWidth: 1.5,
-    borderColor: "#E8EDF5",
+    borderColor: "transparent",
+    shadowColor: "#3B5BDB",
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
   },
   inputError: {
     borderColor: "#EF4444",
@@ -119,36 +97,34 @@ export const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 12,
     color: "#EF4444",
-    marginBottom: 4,
   },
 
-  // ── CTA Button ──────────────────────────────
+  // ── CTA Button ─────────────────────────
   ctaButton: {
     backgroundColor: "#3B5BDB",
     borderRadius: 50,
-    height: 58,
+    height: 56,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 28,
-    marginBottom: 28,
     shadowColor: "#3B5BDB",
-    shadowOpacity: 0.45,
+    shadowOpacity: 0.4,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 6 },
     elevation: 8,
+    marginBottom: 28,
   },
   ctaDisabled: {
     opacity: 0.7,
   },
   ctaText: {
     color: "#fff",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.3,
   },
 
-  // ── Divider ─────────────────────────────────
+  // ── Divider ────────────────────────────
   divider: {
     flexDirection: "row",
     alignItems: "center",
@@ -157,38 +133,30 @@ export const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#CBD5E1",
   },
   dividerText: {
     marginHorizontal: 12,
-    fontSize: 11,
-    fontWeight: "600",
+    fontSize: 13,
     color: "#94A3B8",
-    letterSpacing: 1,
   },
 
-  // ── Social Buttons ──────────────────────────
+  // ── Social ─────────────────────────────
   socialRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 28,
+    marginBottom: 32,
   },
   socialBtn: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F8FAFF",
-    borderRadius: 16,
-    height: 54,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    height: 52,
     borderWidth: 1,
     borderColor: "#E2E8F0",
   },
-  googleG: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: "#4285F4",
-    marginRight: 8,
+  socialDisabled: {
+    opacity: 0.7,
   },
   socialText: {
     fontSize: 15,
@@ -196,7 +164,7 @@ export const styles = StyleSheet.create({
     color: "#1E2A4A",
   },
 
-  // ── Footer ──────────────────────────────────
+  // ── Footer ─────────────────────────────
   footer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -209,21 +177,5 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     color: "#3B5BDB",
-  },
-
-  // ── Bottom Links ────────────────────────────
-  bottomLinks: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-  },
-  bottomLinkText: {
-    fontSize: 13,
-    color: "#94A3B8",
-  },
-  dot: {
-    fontSize: 13,
-    color: "#CBD5E1",
   },
 });

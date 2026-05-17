@@ -11,6 +11,7 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import Header from "@/core/components/Header";
 import { useAddTransaction } from "@/features/transactions/hooks/useAddTransaction";
 import { useCategoriesStore } from "@/features/transactions/store/categoriesStore";
 import type { Category, CategoryId } from "@/features/transactions/types/transaction.types";
@@ -131,26 +132,32 @@ export default function SelectCategoryScreen() {
   return (
     <ScreenWrapper backgroundColor="#F0F2F8">
       <SafeAreaView style={styles.safe}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={handleBack}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="chevron-back" size={24} color="#0F172A" />
-          </TouchableOpacity>
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>Select Category</Text>
-            {isGoalSource && <Text style={styles.headerStep}>STEP 1 OF 3</Text>}
-          </View>
-          <TouchableOpacity
-            style={[styles.doneBtn, !selectedCat && isGoalSource && styles.doneBtnDisabled]}
-            onPress={handleDone}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.doneText}>Done</Text>
-          </TouchableOpacity>
-        </View>
+        <Header
+          left={
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={handleBack}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="chevron-back" size={24} color="#0F172A" />
+            </TouchableOpacity>
+          }
+          center={
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>Select Category</Text>
+              {isGoalSource && <Text style={styles.headerStep}>STEP 1 OF 3</Text>}
+            </View>
+          }
+          right={
+            <TouchableOpacity
+              style={[styles.doneBtn, !selectedCat && isGoalSource && styles.doneBtnDisabled]}
+              onPress={handleDone}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.doneText}>Done</Text>
+            </TouchableOpacity>
+          }
+        />
 
         {isGoalSource && (
           <View style={styles.progressTrack}>
@@ -189,7 +196,7 @@ export default function SelectCategoryScreen() {
           )}
           <TouchableOpacity
             style={styles.createBtn}
-            onPress={() => router.push("/create-category")}
+            onPress={() => router.push({ pathname: "/create-category", params: { source: "goal" } })}
             activeOpacity={0.85}
           >
             <Ionicons name="add" size={22} color="#3B5BDB" />
@@ -203,13 +210,6 @@ export default function SelectCategoryScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F0F2F8" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
   headerCenter: {
     alignItems: "center",
     flex: 1,

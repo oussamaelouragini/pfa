@@ -7,13 +7,22 @@ export const CURRENCIES = {
 
 export type CurrencyCode = keyof typeof CURRENCIES;
 
-export function formatBalance(amount: number, currencyCode: CurrencyCode = "TND"): string {
-  const config = CURRENCIES[currencyCode] || CURRENCIES.TND;
-  const formatted = Math.abs(amount).toLocaleString(config.locale, {
+function formatForCurrency(amount: number, currencyCode: CurrencyCode): string {
+  const abs = Math.abs(amount);
+  if (currencyCode === "TND") {
+    return `${abs.toLocaleString("en-US")}`;
+  }
+  return abs.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-  return `${config.symbol}${formatted}`;
+}
+
+export function formatBalance(amount: number, currencyCode: CurrencyCode = "TND"): string {
+  const config = CURRENCIES[currencyCode] || CURRENCIES.TND;
+  const formatted = formatForCurrency(amount, currencyCode);
+  const sep = currencyCode === "TND" ? " " : "";
+  return `${config.symbol}${sep}${formatted}`;
 }
 
 export function formatAmount(amount: number, currencyCode: CurrencyCode = "TND"): string {
@@ -24,9 +33,10 @@ export function formatAmount(amount: number, currencyCode: CurrencyCode = "TND")
 
 export function formatShort(amount: number, currencyCode: CurrencyCode = "TND"): string {
   const config = CURRENCIES[currencyCode] || CURRENCIES.TND;
+  const sep = currencyCode === "TND" ? " " : "";
   if (Math.abs(amount) >= 1000) {
-    return `${config.symbol}${(Math.abs(amount) / 1000).toFixed(0)}k`;
+    return `${config.symbol}${sep}${(Math.abs(amount) / 1000).toFixed(0)}k`;
   }
-  const formatted = Math.abs(amount).toLocaleString(config.locale);
-  return `${config.symbol}${formatted}`;
+  const formatted = Math.abs(amount).toLocaleString("en-US");
+  return `${config.symbol}${sep}${formatted}`;
 }

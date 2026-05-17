@@ -1,8 +1,9 @@
 import { useRouter, useSegments } from "expo-router";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authService } from "@/features/auth/services/authService";
+import { useTransactionStore } from "@/features/transactions/store/transactionStore";
 import { useUser } from "./UserProvider";
 
 interface AuthContextType {
@@ -22,39 +23,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const segments = useSegments();
   const router = useRouter();
-  const { updateUser } = useUser();
+  const { updateUser, loadProfile, clearUser } = useUser();
+  const resetTransactions = useTransactionStore((s) => s.reset);
+  const fetchTransactions = useTransactionStore((s) => s.fetchTransactions);
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const token = await AsyncStorage.getItem("accessToken");
+        console.log('[Auth] Initializing — token found:', !!token);
         if (token) {
           try {
-            // Try to refresh token, but don't fail if it's unavailable
             const newToken = await authService.refreshToken();
             if (newToken) {
               const storedId = await AsyncStorage.getItem("userId");
               const storedEmail = await AsyncStorage.getItem("userEmail");
-
+              console.log('[Auth] Token refreshed — userId:', storedId, 'email:', storedEmail);
               if (storedId) {
-                const storedEmail = await AsyncStorage.getItem("userEmail");
-                const storedName = await AsyncStorage.getItem("userName");
-                const userName = storedEmail ? storedEmail.split("@")[0] : "";
-                updateUser({ id: storedId, email: storedEmail || "", fullName: storedName || userName });
+                await updateUser({ id: storedId });
+                await loadProfile();
               }
               setIsSignedIn(true);
             } else {
               throw new Error("Token refresh returned null");
             }
           } catch (error) {
-            console.warn("Token refresh failed, clearing session:", error);
+            console.warn("[Auth] Token refresh failed, clearing session:", error);
             await AsyncStorage.removeItem("accessToken");
             await AsyncStorage.removeItem("userId");
+            resetTransactions();
             setIsSignedIn(false);
           }
         }
       } catch (e) {
-        console.warn("Auth initialization error:", e);
+        console.warn("[Auth] Initialization error:", e);
       } finally {
         setIsLoading(false);
       }
@@ -69,22 +71,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const inAuthGroup = segments[0] === "auth";
 
     if (!isSignedIn && !inAuthGroup) {
+      console.log('[Auth] Not signed in — redirecting to sign-in');
       router.replace("/auth/sign-in");
     } else if (isSignedIn && inAuthGroup) {
-      router.replace("/");
+      console.log('[Auth] Signed in — redirecting to home, fetching transactions');
+      fetchTransactions();
+      router.replace("/home");
     }
-  }, [isSignedIn, segments, isLoading, router]);
+  }, [isSignedIn, segments, isLoading, router, fetchTransactions]);
 
-  const signIn = () => setIsSignedIn(true);
-  const signOut = async () => {
+  const signIn = useCallback(() => {
+    const storedId = AsyncStorage.getItem("userId");
+    const storedEmail = AsyncStorage.getItem("userEmail");
+    console.log('[Auth] signIn called — userId:', storedId, 'email:', storedEmail);
+    fetchTransactions();
+    setIsSignedIn(true);
+  }, [fetchTransactions]);
+
+  const signOut = useCallback(async () => {
+    console.log('[Auth] signOut called — clearing all state');
     try {
       await authService.logout();
     } catch (error) {
-      console.warn("Logout API error:", error);
+      console.warn("[Auth] Logout API error:", error);
     }
+    resetTransactions();
+    clearUser();
     setIsSignedIn(false);
     router.replace("/auth/sign-in");
-  };
+  }, [resetTransactions, clearUser, router]);
 
   const value = {
     isSignedIn,

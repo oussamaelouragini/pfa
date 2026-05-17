@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Header from "@/core/components/Header";
 import { useProfile } from "../hooks/useProfile";
 import type {
   AppPreference,
@@ -20,46 +21,13 @@ import type {
 } from "../types/profile.types";
 import { PC, ps } from "./ProfileScreen.styles";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── 1. Top Bar ────────────────────────────────────────────────────────────────
-function TopBar({
-  onBack,
-  onSettings,
-}: {
-  onBack: () => void;
-  onSettings: () => void;
-}) {
-  return (
-    <View style={ps.topBar}>
-      <TouchableOpacity style={ps.backBtn} onPress={onBack} activeOpacity={0.7}>
-        <Ionicons name="arrow-back" size={22} color={PC.onSurface} />
-      </TouchableOpacity>
-
-      <Text style={ps.topBarTitle}>Profile</Text>
-
-      <TouchableOpacity
-        style={ps.settingsBtn}
-        onPress={onSettings}
-        activeOpacity={0.7}
-      >
-        <Ionicons name="settings-outline" size={22} color={PC.primary} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
 // ── 2. Avatar + Name + Badge ──────────────────────────────────────────────────
 function AvatarSection({
   fullName,
-  memberType,
   avatarUri,
   onEdit,
 }: {
   fullName: string;
-  memberType: string;
   avatarUri: string | null;
   onEdit: () => void;
 }) {
@@ -82,12 +50,6 @@ function AvatarSection({
 
       {/* Name */}
       <Text style={ps.userName}>{fullName}</Text>
-
-      {/* Premium badge */}
-      <View style={ps.memberBadge}>
-        <Ionicons name="star" size={11} color={PC.primary} />
-        <Text style={ps.memberText}>{memberType}</Text>
-      </View>
 
       {/* Edit button */}
       <TouchableOpacity style={ps.editBtn} onPress={onEdit} activeOpacity={0.8}>
@@ -323,7 +285,23 @@ export default function ProfileScreen() {
       <StatusBar barStyle="dark-content" backgroundColor={PC.surface} />
 
       {/* Top bar — fixed above scroll */}
-      <TopBar onBack={() => router.back()} onSettings={handleSettings} />
+      <Header
+        left={
+          <TouchableOpacity style={ps.backBtn} onPress={() => router.back()} activeOpacity={0.7}>
+            <Ionicons name="arrow-back" size={22} color={PC.onSurface} />
+          </TouchableOpacity>
+        }
+        title="Profile"
+        right={
+          <TouchableOpacity
+            style={ps.settingsBtn}
+            onPress={handleSettings}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="settings-outline" size={22} color={PC.primary} />
+          </TouchableOpacity>
+        }
+      />
 
       <ScrollView
         contentContainerStyle={ps.scroll}
@@ -332,7 +310,6 @@ export default function ProfileScreen() {
         {/* 1 — Avatar + Name */}
         <AvatarSection
           fullName={user.fullName}
-          memberType={user.memberType}
           avatarUri={user.avatarUri}
           onEdit={handleEditProfile}
         />

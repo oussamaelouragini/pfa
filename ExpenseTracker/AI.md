@@ -504,7 +504,7 @@ npm start
 - Create a new goal
 - Enter amount (e.g., $5,000)
 - Select duration
-- Check the AI estimation card
+- Check the estimation card
 
 ### 3. Expected Output
 

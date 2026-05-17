@@ -20,7 +20,7 @@ const FAB_RISE = FAB_SIZE / 2;
 const NR = FAB_SIZE / 2 + 10;
 
 const LEFT_TABS = [
-  { name: "index", label: "Home", icon: "home-outline", iconActive: "home" },
+  { name: "home", label: "Home", icon: "home-outline", iconActive: "home" },
   { name: "wallet", label: "Wallet", icon: "layers-outline", iconActive: "layers" },
 ];
 const RIGHT_TABS = [
@@ -115,16 +115,19 @@ export default function TabsLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
-      <Tabs.Screen name="index" options={{ title: "Home" }} />
+      <Tabs.Screen name="home" options={{ title: "Home" }} />
       <Tabs.Screen name="wallet" options={{ title: "Wallet" }} />
       <Tabs.Screen name="goals" options={{ title: "Goals" }} />
       <Tabs.Screen name="goals/create" options={{ href: null }} />
+      <Tabs.Screen name="all-goals" options={{ href: null }} />
       <Tabs.Screen name="profile" options={{ title: "Profile" }} />
       <Tabs.Screen name="add-expense" options={{ href: null }} />
       <Tabs.Screen name="stats" options={{ href: null }} />
       <Tabs.Screen name="all-transactions" options={{ href: null }} />
       <Tabs.Screen name="select-category" options={{ href: null }} />
       <Tabs.Screen name="create-category" options={{ href: null }} />
+      <Tabs.Screen name="ai-chat" options={{ href: null }} />
+      <Tabs.Screen name="notifications" options={{ href: null }} />
     </Tabs>
   );
 }

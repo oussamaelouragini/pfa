@@ -10,7 +10,10 @@
       "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\services\")",
       "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\hooks\")",
       "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\components\\\\ai\")",
-      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\screens\")"
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\deadx\\\\OneDrive\\\\Desktop\\\\project_oussema\\\\pfa\\\\ExpenseTracker\\\\screens\")",
+      "Bash(npx expo *)",
+      "Bash(xargs grep -l \"fetchTransactions\\\\|fetchGoals\\\\|loadTransactions\\\\|refreshTransactions\\\\|useTransactionStore\\\\|useGoalsStore\\\\|useWallet\")",
+      "Bash(npx tsc *)"
     ]
   }
 }

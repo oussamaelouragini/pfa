@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import ScreenWrapper from "@/core/components/ScreenWrapper";
+import Header from "@/core/components/Header";
 import { useGoalCategoriesStore } from "@/features/goals/store/goalCategoriesStore";
 import type { GoalCategoryDisplay } from "@/features/goals/types/goals.types";
 import { useCategoriesStore } from "@/features/transactions/store/categoriesStore";
@@ -110,23 +111,27 @@ export default function GoalSelectCategoryScreen() {
   return (
     <ScreenWrapper backgroundColor="#F0F2F8">
       <SafeAreaView style={styles.safe}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => router.push("/(tabs)/goals")}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="chevron-back" size={24} color="#0F172A" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Choose Category</Text>
-          <TouchableOpacity
-            style={styles.doneBtn}
-            onPress={handleDone}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.doneText}>Done</Text>
-          </TouchableOpacity>
-        </View>
+        <Header
+          left={
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => router.push("/(tabs)/goals")}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="chevron-back" size={24} color="#0F172A" />
+            </TouchableOpacity>
+          }
+          title="Choose Category"
+          right={
+            <TouchableOpacity
+              style={styles.doneBtn}
+              onPress={handleDone}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.doneText}>Done</Text>
+            </TouchableOpacity>
+          }
+        />
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
@@ -162,13 +167,6 @@ export default function GoalSelectCategoryScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#F0F2F8" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
   backBtn: {
     width: 40,
     height: 40,
@@ -177,7 +175,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  headerTitle: { fontSize: 18, fontWeight: "800", color: "#0F172A" },
   doneBtn: {
     paddingHorizontal: 12,
     paddingVertical: 8,

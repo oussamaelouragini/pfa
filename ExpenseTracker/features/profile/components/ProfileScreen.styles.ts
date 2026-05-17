@@ -22,28 +22,13 @@ export const ps = StyleSheet.create({
   safe: { flex: 1, backgroundColor: PC.surface },
   scroll: { flexGrow: 1, paddingBottom: 32 },
 
-  // ── Top Bar ──────────────────────────────────────────────────────────────────
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 8,
-    backgroundColor: PC.surface,
-  },
+  // ── Header ──────────────────────────────────────────────────────────────────
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
-  },
-  topBarTitle: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: PC.onSurface,
-    letterSpacing: -0.3,
   },
   settingsBtn: {
     width: 38,
@@ -105,22 +90,6 @@ export const ps = StyleSheet.create({
     letterSpacing: -0.5,
     marginBottom: 8,
   },
-  memberBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: PC.primaryLight,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
-    gap: 5,
-  },
-  memberText: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: PC.primary,
-    letterSpacing: 1.2,
-  },
-
   // ── Edit Profile Button ───────────────────────────────────────────────────────
   editBtn: {
     flexDirection: "row",

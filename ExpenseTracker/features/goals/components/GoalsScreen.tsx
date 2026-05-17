@@ -3,59 +3,68 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  FlatList,
-  Image,
   ScrollView,
-  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "@/providers/UserProvider";
+import ScreenWrapper from "@/core/components/ScreenWrapper";
+import Header from "@/core/components/Header";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatBalance as fmtBalance } from "@/utils/currency";
+import { calculateGoalInsights } from "@/utils/goalEstimations";
 import { useExploreGoals } from "../hooks/useExploreGoals";
 import { C, styles } from "./GoalsScreen.styles";
 
-function Header() {
-  const { user } = useUser();
-
-  return (
-    <View style={styles.header}>
-      <View style={styles.headerLeft}>
-        <View style={styles.avatarImg}>
-          {user.avatarUri ? (
-            <Image source={{ uri: user.avatarUri }} style={styles.headerAvatarImage} />
-          ) : (
-            <Ionicons name="person" size={22} color="#fff" />
-          )}
-        </View>
-        <Text style={styles.headerBrand}>{user.fullName}</Text>
-      </View>
-      <TouchableOpacity style={styles.bellBtn}>
-        <Ionicons name="notifications-outline" size={20} color="#1E2A4A" />
-        <View style={styles.bellDot} />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function ActiveGoalCard({ goal, formatBalance }: { goal: any; formatBalance: (n: number) => string }) {
+function ActiveGoalCard({ goal, formatBalance, onPress }: {
+  goal: any;
+  formatBalance: (n: number) => string;
+  onPress: () => void;
+}) {
   const categoryIcon = goal.category?.icon || "flag-outline";
   const categoryColor = goal.category?.color || "#3B5BDB";
+  const savedAmount = goal.savedAmount ?? 0;
+  const target = goal.target || 1;
+  const percent = Math.min(Math.round((savedAmount / target) * 100), 100);
+
+  const insights = React.useMemo(
+    () =>
+      calculateGoalInsights({
+        savedAmount,
+        target,
+        createdAt: goal.createdAt,
+        duration: goal.duration,
+        frequency: goal.frequency,
+        formatCurrency: formatBalance,
+      }),
+    [savedAmount, target, goal.createdAt, goal.duration, goal.frequency, formatBalance]
+  );
 
   return (
-    <View style={styles.progressCard}>
-      <View style={styles.progressIconWrapper}>
-        <Ionicons name={categoryIcon as any} size={20} color={categoryColor} />
+    <TouchableOpacity
+      style={styles.progressCard}
+      activeOpacity={0.92}
+      onPress={onPress}
+    >
+      <View style={styles.progressCardTop}>
+        <View style={[styles.progressIconWrapper, { backgroundColor: categoryColor + "20" }]}>
+          <Ionicons name={categoryIcon as any} size={22} color={categoryColor} />
+        </View>
+        <View style={[styles.ringWrapper, { borderColor: categoryColor + "20" }]}>
+          <Text style={[styles.ringText, { color: categoryColor }]}>{percent}%</Text>
+        </View>
       </View>
       <Text style={styles.progressGoalName}>{goal.name}</Text>
       <Text style={styles.progressMonths}>{goal.duration}</Text>
-      <View style={styles.progressAmountRow}>
-        <Text style={styles.progressSaved}>{formatBalance(goal.target)}</Text>
-        <Text style={styles.progressTarget}>target</Text>
+      <View style={styles.progressTrack}>
+        <View style={[styles.progressFill, { width: `${percent}%`, backgroundColor: categoryColor }]} />
       </View>
-    </View>
+      <View style={styles.progressAmountRow}>
+        <Text style={styles.progressSaved}>{formatBalance(savedAmount)}</Text>
+        <Text style={styles.progressTarget}>of {formatBalance(target)}</Text>
+      </View>
+      <Text style={styles.progressInsight}>{insights.message}</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -69,17 +78,21 @@ export default function GoalsScreen() {
   const handleCreateGoal = () => router.push("/select-category?source=goal");
 
   return (
-    <View style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor={C.surface} />
-
+    <ScreenWrapper backgroundColor={C.surface} edges={["top", "left", "right"]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
+        <Header
+          left={
+            <TouchableOpacity style={styles.headerBackBtn} onPress={() => router.push("/(tabs)/home")}>
+              <Ionicons name="arrow-back" size={22} color="#0F172A" />
+            </TouchableOpacity>
+          }
+          center={<Text style={styles.pageTitle}>Savings Goals</Text>}
+        />
         <View style={styles.container}>
-          <Header />
 
-          <Text style={styles.pageTitle}>Savings Goals</Text>
           <Text style={styles.pageSubtitle}>
             Dream big, save smart, reach faster.
           </Text>
@@ -92,16 +105,16 @@ export default function GoalsScreen() {
                   <Text style={styles.seeAllText}>View All</Text>
                 </TouchableOpacity>
               </View>
-              <FlatList
-                data={goals.slice(0, 3)}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item._id}
-                contentContainerStyle={styles.progressScroll}
-                renderItem={({ item }) => (
-                  <ActiveGoalCard goal={item} formatBalance={formatBalance} />
-                )}
-              />
+              <View style={styles.goalsList}>
+                {goals.slice(0, 3).map((goal) => (
+                  <ActiveGoalCard
+                    key={goal._id}
+                    goal={goal}
+                    formatBalance={formatBalance}
+                    onPress={() => router.push({ pathname: "/(tabs)/all-goals", params: { goalId: goal._id } })}
+                  />
+                ))}
+              </View>
             </>
           )}
         </View>
@@ -125,6 +138,6 @@ export default function GoalsScreen() {
           <Ionicons name="add" size={28} color="#fff" />
         </LinearGradient>
       </TouchableOpacity>
-    </View>
+    </ScreenWrapper>
   );
 }

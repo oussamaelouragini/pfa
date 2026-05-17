@@ -19,10 +19,11 @@ export async function transcribeAudio(filePath: string): Promise<{
 
   const transcription = await groq.audio.transcriptions.create({
     file: fileStream,
-    model: 'whisper-large-v3',
-    // No language specified → auto-detect (supports Arabic, French, English, Tunisian dialect)
+    model: 'whisper-large-v3-turbo',
     response_format: 'verbose_json',
-    temperature: 0,
+    temperature: 0.2,
+    // Bias Whisper toward English and French; it will still detect Arabic if spoken
+    prompt: 'English or French. Finance app: expense, income, transaction, goal, balance, budget, dépense, revenu, objectif.',
   });
 
   // Clean up uploaded file after transcription

@@ -1,3 +1,4 @@
+import { useGoogleSignIn } from "@/features/auth/hooks/useGoogleSignIn";
 import { useSignUp } from "@/features/auth/hooks/useSignUp";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -12,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./SignUpForm.styles"; // ← styles come from here
+import { styles } from "./SignUpForm.styles";
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -25,6 +26,10 @@ export default function SignUpForm() {
     handleChange,
     handleSignUp,
   } = useSignUp();
+
+  const { googleLoading, handleGoogleSignIn, isConfigured } = useGoogleSignIn();
+
+  const isBusy = loading || googleLoading;
 
   return (
     <KeyboardAvoidingView
@@ -70,6 +75,7 @@ export default function SignUpForm() {
               onChangeText={(v) => handleChange("fullName", v)}
               autoCapitalize="words"
               returnKeyType="next"
+              editable={!isBusy}
             />
           </View>
           {errors.fullName && (
@@ -96,6 +102,7 @@ export default function SignUpForm() {
               keyboardType="email-address"
               autoCapitalize="none"
               returnKeyType="next"
+              editable={!isBusy}
             />
           </View>
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
@@ -119,6 +126,7 @@ export default function SignUpForm() {
               onChangeText={(v) => handleChange("password", v)}
               secureTextEntry={!showPassword}
               returnKeyType="done"
+              editable={!isBusy}
             />
             <TouchableOpacity
               onPress={() => setShowPassword((p) => !p)}
@@ -138,9 +146,9 @@ export default function SignUpForm() {
 
         {/* ── CTA Button ── */}
         <TouchableOpacity
-          style={[styles.ctaButton, loading && styles.ctaDisabled]}
+          style={[styles.ctaButton, isBusy && styles.ctaDisabled]}
           onPress={handleSignUp}
-          disabled={loading}
+          disabled={isBusy}
           activeOpacity={0.85}
         >
           {loading ? (
@@ -165,25 +173,27 @@ export default function SignUpForm() {
           <View style={styles.dividerLine} />
         </View>
 
-        {/* ── Social Buttons ── */}
+        {/* ── Google ── */}
         <View style={styles.socialRow}>
-          <TouchableOpacity style={styles.socialBtn} activeOpacity={0.8}>
-            <Ionicons
-              name="logo-google"
-              size={18}
-              color="#4285F4"
-              style={{ marginRight: 8 }}
-            />
-            <Text style={styles.socialText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialBtn} activeOpacity={0.8}>
-            <Ionicons
-              name="logo-apple"
-              size={18}
-              color="#000"
-              style={{ marginRight: 8 }}
-            />
-            <Text style={styles.socialText}>Apple</Text>
+          <TouchableOpacity
+            style={[styles.socialBtn, googleLoading && styles.socialDisabled]}
+            onPress={handleGoogleSignIn}
+            disabled={isBusy || !isConfigured}
+            activeOpacity={0.8}
+          >
+            {googleLoading ? (
+              <ActivityIndicator color="#4285F4" />
+            ) : (
+              <>
+                <Ionicons
+                  name="logo-google"
+                  size={18}
+                  color="#4285F4"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.socialText}>Google</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 

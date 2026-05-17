@@ -131,12 +131,9 @@ export const styles = StyleSheet.create({
 
   // ── Social ─────────────────────────────
   socialRow: {
-    flexDirection: "row",
-    gap: 12,
     marginBottom: 32,
   },
   socialBtn: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -145,6 +142,9 @@ export const styles = StyleSheet.create({
     height: 52,
     borderWidth: 1,
     borderColor: "#E2E8F0",
+  },
+  socialDisabled: {
+    opacity: 0.7,
   },
   socialText: {
     fontSize: 15,

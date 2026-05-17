@@ -1,189 +1,124 @@
-// features/wallet/components/WalletScreen.styles.ts
-// ✅ Styles only
+import { StyleSheet } from "react-native";
 
-import { Dimensions, StyleSheet } from "react-native";
-
-export const CARD_WIDTH = Dimensions.get("window").width - 80;
-export const CARD_HEIGHT = 180;
+const BLUE = "#3B5BDB";
 
 export const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#F0F2F8" },
   scroll: { flexGrow: 1, paddingBottom: 32 },
   container: { paddingHorizontal: 20, paddingTop: 16 },
 
-  // ── Header ──────────────────────────────────────────────────────────────────
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  // ── Premium Blue Card ──
+  balanceCard: {
+    borderRadius: 28,
+    padding: 24,
     marginBottom: 28,
-  },
-  headerLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
-  avatarCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: "#3B5BDB",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: BLUE,
+    shadowColor: BLUE,
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
     overflow: "hidden",
   },
-  headerAvatarImage: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#0F172A",
-    letterSpacing: -0.3,
-  },
-  bellBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  bellDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#EF4444",
+  balanceCardAccent: {
     position: "absolute",
-    top: 8,
-    right: 8,
-    borderWidth: 1.5,
-    borderColor: "#fff",
+    top: -60,
+    right: -40,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
-
-  // ── Total Net Worth ──────────────────────────────────────────────────────────
-  netWorthSection: { marginBottom: 28 },
-  netWorthLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: "#94A3B8",
-    letterSpacing: 1.8,
-    marginBottom: 6,
+  balanceCardAccent2: {
+    position: "absolute",
+    bottom: -30,
+    left: -30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.04)",
   },
-  netWorthAmount: {
-    fontSize: 42,
-    fontWeight: "800",
-    color: "#0F172A",
-    letterSpacing: -1.5,
-  },
-
-  // ── Cards Carousel ────────────────────────────────────────────────────────────
-  cardsSection: { marginBottom: 32 },
-  cardsScroll: { gap: 16 },
-  cardWrapper: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 24,
-    padding: 22,
-    justifyContent: "space-between",
-    shadowColor: "#3B5BDB",
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-    marginRight: 16,
-  },
-
-  // Card — light variant
-  cardLight: { backgroundColor: "#EEF2FF" },
-  cardDark: { backgroundColor: "#1E293B" },
-
   cardTopRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    marginBottom: 8,
   },
-  cardLabel: {
+  balanceLabel: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.75)",
+    fontWeight: "500",
+  },
+  cardTypeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(255,255,255,0.15)",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  cardTypeBadgeText: {
     fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 1.5,
+    color: "#fff",
+    letterSpacing: 0.8,
   },
-  cardLabelLight: { color: "#3B5BDB" },
-  cardLabelDark: { color: "#94A3B8" },
-  cardName: { fontSize: 20, fontWeight: "800", marginTop: 4 },
-  cardNameLight: { color: "#0F172A" },
-  cardNameDark: { color: "#FFFFFF" },
-
-  // Contactless icon background
-  contactlessLight: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(59,91,219,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
+  balanceAmount: {
+    fontSize: 40,
+    fontWeight: "800",
+    color: "#fff",
+    letterSpacing: -1,
+    marginBottom: 20,
   },
-  contactlessDark: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    alignItems: "center",
-    justifyContent: "center",
+  cardDivider: {
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    marginBottom: 20,
   },
-
-  cardNumber: { fontSize: 16, letterSpacing: 3, fontWeight: "600" },
-  cardNumberLight: { color: "#475569" },
-  cardNumberDark: { color: "#94A3B8" },
-
   cardBottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-
-  // Overlapping circles (Visa / Mastercard style)
-  circlesRow: { flexDirection: "row", alignItems: "center" },
-  circleA: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    opacity: 0.7,
-  },
-  circleB: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    marginLeft: -12,
-    opacity: 0.5,
-  },
-  circleLightA: { backgroundColor: "#6366F1" },
-  circleLightB: { backgroundColor: "#A5B4FC" },
-  circleDarkA: { backgroundColor: "#475569" },
-  circleDarkB: { backgroundColor: "#94A3B8" },
-
-  cardExpiry: { fontSize: 11, fontWeight: "600" },
-  cardExpiryLight: { color: "#64748B" },
-  cardExpiryDark: { color: "#94A3B8" },
-
-  cardNetwork: { fontSize: 11, fontWeight: "800", letterSpacing: 1.5 },
-  cardNetworkLight: { color: "#3B5BDB" },
-  cardNetworkDark: { color: "#94A3B8" },
-
-  // Dots indicator
-  dotsRow: {
-    flexDirection: "row",
+  visaGroup: { flexDirection: "row", alignItems: "center" },
+  visaCircle1: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#1A3CB8",
+    alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    marginTop: 14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.3)",
   },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#CBD5E1" },
-  dotActive: { width: 20, backgroundColor: "#3B5BDB" },
+  visaCircle2: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#2D4ED8",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: -14,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.3)",
+  },
+  visaText: { fontSize: 9, fontWeight: "800", color: "#fff" },
+  addMoneyBtn: {
+    backgroundColor: "#fff",
+    borderRadius: 50,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  addMoneyBtnText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: BLUE,
+  },
 
-  // ── Section Header ────────────────────────────────────────────────────────────
+  // ── Section Header ──
   sectionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -191,60 +126,24 @@ export const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "800",
     color: "#0F172A",
     letterSpacing: -0.4,
   },
-  manageBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    backgroundColor: "#EEF2FF",
-    borderRadius: 20,
-  },
-  manageBadgeText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#3B5BDB",
-    letterSpacing: 1,
-  },
-  seeAllText: { fontSize: 14, fontWeight: "600", color: "#3B5BDB" },
 
-  // ── Account Card ──────────────────────────────────────────────────────────────
-  accountCard: {
-    flexDirection: "row",
-    alignItems: "center",
+  // ── Activity ──
+  activityCard: {
     backgroundColor: "#fff",
-    borderRadius: 18,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    marginBottom: 8,
     shadowColor: "#000",
     shadowOpacity: 0.04,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
-  accountIconWrapper: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 14,
-  },
-  accountInfo: { flex: 1 },
-  accountName: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#0F172A",
-    marginBottom: 3,
-  },
-  accountMeta: { fontSize: 13, color: "#94A3B8" },
-  accountRight: { alignItems: "flex-end", gap: 4 },
-  accountBalance: { fontSize: 16, fontWeight: "700", color: "#0F172A" },
-  accountBadge: { fontSize: 12, fontWeight: "700" },
-
-  // ── Activity Item ─────────────────────────────────────────────────────────────
   activityItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -270,16 +169,9 @@ export const styles = StyleSheet.create({
   activityTime: { fontSize: 12, color: "#94A3B8" },
   activityAmount: { fontSize: 15, fontWeight: "700" },
   activityNeg: { color: "#0F172A" },
-  activityPos: { color: "#3B5BDB" },
+  activityPos: { color: "#16A34A" },
 
-  // ── Loading ─────────────────────────────────────────────────────────────
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 40,
-  },
-
-  // ── Empty Activity ──────────────────────────────────────────────────────
+  // ── Empty Activity ──
   emptyActivity: {
     alignItems: "center",
     paddingVertical: 40,
@@ -293,5 +185,139 @@ export const styles = StyleSheet.create({
   emptyActivitySubtext: {
     fontSize: 13,
     color: "#CBD5E1",
+  },
+
+  // ── Loading ──
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+  },
+
+  // ── Add Money Modal ──
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    padding: 24,
+    paddingBottom: 40,
+  },
+  modalHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#CBD5E1",
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#0F172A",
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: "#64748B",
+    marginBottom: 24,
+  },
+  modalInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    height: 60,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    marginBottom: 20,
+  },
+  modalInputFocused: {
+    borderColor: BLUE,
+  },
+  modalCurrencySign: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginRight: 8,
+  },
+  modalInput: {
+    flex: 1,
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+  modalActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: "#F1F5F9",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#64748B",
+  },
+  modalSaveBtn: {
+    flex: 2,
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: BLUE,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
+  },
+  modalSaveDisabled: {
+    opacity: 0.6,
+  },
+  modalSaveText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#fff",
+  },
+
+  // ── Success Overlay ──
+  successOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(22,163,74,0.95)",
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  successCheck: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#fff",
+    marginBottom: 4,
+  },
+  successSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.8)",
   },
 });

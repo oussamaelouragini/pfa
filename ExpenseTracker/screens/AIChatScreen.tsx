@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   Alert,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import ScreenWrapper from '@/core/components/ScreenWrapper';
+import Header from '@/core/components/Header';
 import { useAIChat, ChatMessage } from '../hooks/useAIChat';
 import MessageBubble from '../components/ai/MessageBubble';
 import VoiceButton from '../components/ai/VoiceButton';
@@ -106,29 +107,28 @@ export default function AIChatScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="chevron-back" size={24} color="#1F2937" />
-        </TouchableOpacity>
-
-        <View style={styles.headerCenter}>
-          <View style={styles.aiAvatar}>
-            <Ionicons name="sparkles" size={16} color="#fff" />
+    <ScreenWrapper backgroundColor="#FAFAFA" edges={["top", "left", "right"]}>
+      <Header
+        showBack
+        center={
+          <View style={styles.headerCenter}>
+            <View style={styles.aiAvatar}>
+              <Ionicons name="sparkles" size={16} color="#fff" />
+            </View>
+            <View>
+              <Text style={styles.headerTitle}>Financial Copilot</Text>
+              <Text style={styles.headerSubtitle}>
+                {isLoading ? 'Thinking...' : isRecording ? 'Listening...' : 'Online'}
+              </Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.headerTitle}>Financial Copilot</Text>
-            <Text style={styles.headerSubtitle}>
-              {isLoading ? 'Thinking...' : isRecording ? 'Listening...' : 'Online'}
-            </Text>
-          </View>
-        </View>
-
-        <TouchableOpacity onPress={handleClearChat} style={styles.clearBtn}>
-          <Ionicons name="refresh-outline" size={20} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
+        }
+        right={
+          <TouchableOpacity onPress={handleClearChat} style={styles.clearBtn}>
+            <Ionicons name="refresh-outline" size={20} color="#6B7280" />
+          </TouchableOpacity>
+        }
+      />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -204,33 +204,15 @@ export default function AIChatScreen() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
   flex: {
     flex: 1,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  backBtn: {
-    padding: 4,
-    marginRight: 8,
-  },
   headerCenter: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

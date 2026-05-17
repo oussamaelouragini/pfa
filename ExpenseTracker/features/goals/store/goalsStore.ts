@@ -14,6 +14,7 @@ interface GoalsStore {
     categoryId: string;
     target: number;
   }) => Promise<void>;
+  updateGoalSavings: (id: string, savedAmount: number) => Promise<void>;
   deleteGoal: (id: string) => Promise<void>;
 }
 
@@ -49,6 +50,18 @@ export const useGoalsStore = create<GoalsStore>((set) => ({
     } catch (error: any) {
       set({ error: error.message, isLoading: false });
       throw error;
+    }
+  },
+
+  updateGoalSavings: async (id, savedAmount) => {
+    set({ error: null });
+    try {
+      const updated = await goalApi.addSavings(id, savedAmount);
+      set((state) => ({
+        goals: state.goals.map((g) => (g._id === id ? { ...g, savedAmount: updated.savedAmount ?? savedAmount } : g)),
+      }));
+    } catch (error: any) {
+      set({ error: error.message });
     }
   },
 

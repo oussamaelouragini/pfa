@@ -13,6 +13,7 @@ interface TransactionStore {
   updateTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "createdAt">>) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   getRecentTransactions: (limit?: number) => Transaction[];
+  reset: () => void;
 }
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
@@ -115,5 +116,10 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
       .transactions.slice()
       .sort((a, b) => b.createdAt - a.createdAt)
       .slice(0, limit);
+  },
+
+  reset: () => {
+    set({ transactions: [], balance: 0, isLoading: false, error: null });
+    console.log('[TransactionStore] State reset to defaults');
   },
 }));

@@ -1,200 +1,123 @@
-// features/wallet/components/WalletScreen.tsx
-// ✅ Render (JSX) only — connected to real data
-
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { useRouter } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
+  Alert,
+  Animated,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
   ScrollView,
-  StatusBar,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "@/providers/UserProvider";
+import ScreenWrapper from "@/core/components/ScreenWrapper";
+import Header from "@/core/components/Header";
+import { useCurrency } from "@/providers/CurrencyProvider";
 import { useWallet } from "../hooks/useWallet";
 import type { WalletActivity } from "../types/wallet.types";
-import { CARD_WIDTH, styles } from "./WalletScreen.styles";
+import { styles } from "./WalletScreen.styles";
 
-// ── Static card data (UI placeholder — no backend for bank cards) ──
-const WALLET_CARDS = [
-  {
-    id: "c1",
-    label: "MAIN ACCOUNT",
-    name: "Digital Wallet",
-    last4: "••••",
-    expiry: "",
-    network: "VISA",
-    isDark: false,
-    color1: "EEF2FF",
-    color2: "E0E7FF",
-  },
-];
+// ── Sub-components ──
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── 1. Header ─────────────────────────────────────────────────────────────────
-function Header() {
-  const { user } = useUser();
+function WalletHeader() {
+  const router = useRouter();
 
   return (
-    <View style={styles.header}>
-      <View style={styles.headerLeft}>
-        <View style={styles.avatarCircle}>
-          {user.avatarUri ? (
-            <Image source={{ uri: user.avatarUri }} style={styles.headerAvatarImage} />
-          ) : (
-            <Ionicons name="person" size={22} color="#fff" />
-          )}
-        </View>
-        <Text style={styles.headerTitle}>{user.fullName}</Text>
-      </View>
-
-      <TouchableOpacity style={styles.bellBtn} activeOpacity={0.8}>
-        <Ionicons name="notifications-outline" size={20} color="#1E2A4A" />
-        <View style={styles.bellDot} />
-      </TouchableOpacity>
-    </View>
+    <Header
+      showBack
+      right={
+        <Header.IconBtn onPress={() => router.push("/(tabs)/notifications")}>
+          <Ionicons name="notifications-outline" size={20} color="#475569" />
+        </Header.IconBtn>
+      }
+    />
   );
 }
 
-// ── 2. Balance Section ────────────────────────────────────────────────────────
-function BalanceSection({
+function BalanceCard({
   balance,
   formatBalance,
+  onAddMoney,
+  topUpSuccess,
 }: {
   balance: number;
   formatBalance: (n: number) => string;
+  onAddMoney: () => void;
+  topUpSuccess: boolean;
 }) {
-  return (
-    <View style={styles.netWorthSection}>
-      <Text style={styles.netWorthLabel}>TOTAL BALANCE</Text>
-      <Text style={styles.netWorthAmount}>{formatBalance(balance)}</Text>
-    </View>
-  );
-}
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-// ── 3. Single Bank Card ───────────────────────────────────────────────────────
-function BankCard({ card }: { card: typeof WALLET_CARDS[0] }) {
-  const dark = card.isDark;
+  useEffect(() => {
+    if (topUpSuccess) {
+      fadeAnim.setValue(0);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [topUpSuccess]);
 
   return (
-    <View
-      style={[styles.cardWrapper, dark ? styles.cardDark : styles.cardLight]}
-    >
+    <View style={styles.balanceCard}>
+      <View style={styles.balanceCardAccent} />
+      <View style={styles.balanceCardAccent2} />
       <View style={styles.cardTopRow}>
-        <View>
-          <Text
-            style={[
-              styles.cardLabel,
-              dark ? styles.cardLabelDark : styles.cardLabelLight,
-            ]}
-          >
-            {card.label}
-          </Text>
-          <Text
-            style={[
-              styles.cardName,
-              dark ? styles.cardNameDark : styles.cardNameLight,
-            ]}
-          >
-            {card.name}
-          </Text>
-        </View>
-        <View style={dark ? styles.contactlessDark : styles.contactlessLight}>
-          <Ionicons
-            name="wifi-outline"
-            size={18}
-            color={dark ? "#94A3B8" : "#3B5BDB"}
-            style={{ transform: [{ rotate: "90deg" }] }}
-          />
+        <Text style={styles.balanceLabel}>Total Balance</Text>
+        <View style={styles.cardTypeBadge}>
+          <Ionicons name="card-outline" size={11} color="#fff" />
+          <Text style={styles.cardTypeBadgeText}>CARD</Text>
         </View>
       </View>
-
-      <Text
-        style={[
-          styles.cardNumber,
-          dark ? styles.cardNumberDark : styles.cardNumberLight,
-        ]}
-      >
-        {"• • • •   " + card.last4}
-      </Text>
-
+      <Text style={styles.balanceAmount}>{formatBalance(balance)}</Text>
+      <View style={styles.cardDivider} />
       <View style={styles.cardBottomRow}>
-        <View style={styles.circlesRow}>
-          <View
-            style={[
-              styles.circleA,
-              dark ? styles.circleDarkA : styles.circleLightA,
-            ]}
-          />
-          <View
-            style={[
-              styles.circleB,
-              dark ? styles.circleDarkB : styles.circleLightB,
-            ]}
-          />
+        <View style={styles.visaGroup}>
+          <View style={styles.visaCircle1}>
+            <Text style={styles.visaText}>VIS</Text>
+          </View>
+          <View style={styles.visaCircle2}>
+            <Ionicons
+              name="ellipse"
+              size={10}
+              color="rgba(255,255,255,0.5)"
+            />
+          </View>
         </View>
-
-        <Text
-          style={[
-            styles.cardNetwork,
-            dark ? styles.cardNetworkDark : styles.cardNetworkLight,
-          ]}
+        <TouchableOpacity
+          style={styles.addMoneyBtn}
+          onPress={onAddMoney}
+          activeOpacity={0.8}
         >
-          {card.network}
-        </Text>
+          <Ionicons name="add-circle-outline" size={16} color="#3B5BDB" />
+          <Text style={styles.addMoneyBtnText}>Add Money</Text>
+        </TouchableOpacity>
       </View>
+      {topUpSuccess && (
+        <Animated.View style={[styles.successOverlay, { opacity: fadeAnim }]}>
+          <View style={styles.successCheck}>
+            <Ionicons name="checkmark" size={28} color="#fff" />
+          </View>
+          <Text style={styles.successTitle}>Added Successfully!</Text>
+          <Text style={styles.successSubtitle}>
+            Your balance has been updated
+          </Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
 
-// ── 4. Cards Carousel ─────────────────────────────────────────────────────────
-function CardsCarousel({ cards }: { cards: typeof WALLET_CARDS }) {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-
-  const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const x = e.nativeEvent.contentOffset.x;
-    const index = Math.round(x / (CARD_WIDTH + 16));
-    setActiveIndex(index);
-  };
-
-  return (
-    <View style={styles.cardsSection}>
-      <ScrollView
-        horizontal
-        pagingEnabled={false}
-        snapToInterval={CARD_WIDTH + 16}
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.cardsScroll}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentInset={{ right: 40 }}
-      >
-        {cards.map((card) => (
-          <BankCard key={card.id} card={card} />
-        ))}
-      </ScrollView>
-
-      <View style={styles.dotsRow}>
-        {cards.map((_, i) => (
-          <View
-            key={i}
-            style={[styles.dot, i === activeIndex && styles.dotActive]}
-          />
-        ))}
-      </View>
-    </View>
-  );
-}
-
-// ── 5. Activity Item ──────────────────────────────────────────────────────────
 function ActivityItem({
   item,
   formatAmount,
@@ -213,12 +136,10 @@ function ActivityItem({
       >
         <Ionicons name={item.icon as any} size={20} color={item.iconColor} />
       </View>
-
       <View style={styles.activityInfo}>
         <Text style={styles.activityTitle}>{item.title}</Text>
         <Text style={styles.activityTime}>{item.time}</Text>
       </View>
-
       <Text
         style={[
           styles.activityAmount,
@@ -231,63 +152,183 @@ function ActivityItem({
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main Screen
-// ─────────────────────────────────────────────────────────────────────────────
+function AddMoneyModal({
+  visible,
+  onClose,
+  onSave,
+  loading,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onSave: (amount: number) => void;
+  loading: boolean;
+}) {
+  const { currency } = useCurrency();
+  const [amountStr, setAmountStr] = useState("");
+  const [focused, setFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
+
+  const currencySymbol =
+    currency === "TND"
+      ? "TND"
+      : currency === "USD"
+        ? "$"
+        : currency === "EUR"
+          ? "\u20AC"
+          : "\u00A3";
+
+  useEffect(() => {
+    if (visible) {
+      setAmountStr("");
+      setTimeout(() => inputRef.current?.focus(), 300);
+    }
+  }, [visible]);
+
+  const parsed = parseFloat(amountStr);
+  const isValid = !isNaN(parsed) && parsed > 0;
+
+  const handleSave = () => {
+    if (!isValid) return;
+    onSave(parsed);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity
+        style={styles.modalOverlay}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <TouchableOpacity activeOpacity={1} onPress={() => {}}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHandle} />
+              <Text style={styles.modalTitle}>Add Money</Text>
+              <Text style={styles.modalSubtitle}>
+                Enter the amount you want to add to your card
+              </Text>
+              <View
+                style={[
+                  styles.modalInputWrapper,
+                  focused && styles.modalInputFocused,
+                ]}
+              >
+                <Text style={styles.modalCurrencySign}>{currencySymbol}</Text>
+                <TextInput
+                  ref={inputRef}
+                  style={styles.modalInput}
+                  placeholder="0.00"
+                  placeholderTextColor="#CBD5E1"
+                  keyboardType="decimal-pad"
+                  value={amountStr}
+                  onChangeText={setAmountStr}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
+                  editable={!loading}
+                />
+              </View>
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={styles.modalCancelBtn}
+                  onPress={onClose}
+                  disabled={loading}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.modalSaveBtn,
+                    (!isValid || loading) && styles.modalSaveDisabled,
+                  ]}
+                  onPress={handleSave}
+                  disabled={!isValid || loading}
+                  activeOpacity={0.85}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : (
+                    <>
+                      <Ionicons name="wallet-outline" size={18} color="#fff" />
+                      <Text style={styles.modalSaveText}>Add Money</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </TouchableOpacity>
+    </Modal>
+  );
+}
+
+// ── Main Screen ──
+
 export default function WalletScreen() {
   const {
     balance,
     activity,
     isLoading,
+    topUpLoading,
+    topUpSuccess,
     formatBalance,
     formatAmount,
+    topUpCard,
   } = useWallet();
 
-  return (
-    <View style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F0F2F8" />
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const handleAddMoney = useCallback(
+    async (amount: number) => {
+      try {
+        await topUpCard(amount);
+        setModalVisible(false);
+      } catch (error: any) {
+        const msg =
+          error?.response?.data?.message ||
+          error?.message ||
+          "Failed to add money";
+        Alert.alert("Error", msg);
+      }
+    },
+    [topUpCard]
+  );
+
+  return (
+    <ScreenWrapper backgroundColor="#F0F2F8" edges={["top", "left", "right"]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.container}>
-          {/* 1 — Header */}
-          <Header />
+          <WalletHeader />
 
-          {/* 2 — Balance */}
           {isLoading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#3B5BDB" />
             </View>
           ) : (
-            <BalanceSection
+            <BalanceCard
               balance={balance}
               formatBalance={formatBalance}
+              onAddMoney={() => setModalVisible(true)}
+              topUpSuccess={topUpSuccess}
             />
           )}
 
-          {/* 3 — Cards Carousel */}
-          <CardsCarousel cards={WALLET_CARDS} />
-
-          {/* 4 — Activity */}
           <View style={styles.sectionRow}>
             <Text style={styles.sectionTitle}>Activity</Text>
           </View>
 
-          <View
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 18,
-              paddingHorizontal: 16,
-              marginBottom: 8,
-              shadowColor: "#000",
-              shadowOpacity: 0.04,
-              shadowRadius: 8,
-              shadowOffset: { width: 0, height: 2 },
-              elevation: 2,
-            }}
-          >
+          <View style={styles.activityCard}>
             {activity.length === 0 ? (
               <View style={styles.emptyActivity}>
                 <Ionicons name="time-outline" size={32} color="#CBD5E1" />
@@ -308,6 +349,13 @@ export default function WalletScreen() {
           </View>
         </View>
       </ScrollView>
-    </View>
+
+      <AddMoneyModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSave={handleAddMoney}
+        loading={topUpLoading}
+      />
+    </ScreenWrapper>
   );
 }

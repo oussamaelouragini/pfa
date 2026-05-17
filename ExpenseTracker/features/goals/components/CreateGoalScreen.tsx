@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Keyboard,
   ScrollView,
   Text,
@@ -14,6 +15,7 @@ import {
 } from "react-native";
 import { useGoalsStore } from "../store/goalsStore";
 import { useGoalCategoriesStore } from "../store/goalCategoriesStore";
+import Header from "@/core/components/Header";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { CURRENCIES, formatBalance as fmtBalance } from "@/utils/currency";
 import type { CreateGoalForm } from "../types/goals.types";
@@ -89,8 +91,11 @@ export default function CreateGoalScreen() {
         target: amount,
       });
       router.push("/(tabs)/goals");
-    } catch (error) {
-      console.error("Failed to create goal:", error);
+    } catch (error: any) {
+      Alert.alert(
+        "Error",
+        error?.message || "Failed to create goal. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +126,7 @@ export default function CreateGoalScreen() {
           <Text style={s.amountHint}>Enter your savings goal amount</Text>
         </View>
 
-        <Text style={[s.fieldLabel, { textAlign: "center", marginBottom: 14 }]}>
+        <Text style={[s.fieldLabel, { textAlign: "center", marginBottom: 10 }]}>
           QUICK SELECT
         </Text>
         <View style={s.quickAmountsWrapper}>
@@ -241,7 +246,7 @@ export default function CreateGoalScreen() {
       <View style={s.aiCard}>
         <View style={s.aiRow}>
           <Ionicons name="sparkles" size={18} color="#3B5BDB" />
-          <Text style={s.aiTitle}>AI ESTIMATION</Text>
+          <Text style={s.aiTitle}>ESTIMATION</Text>
         </View>
         <Text style={s.aiBody}>
           To reach your goal of{" "}
@@ -256,18 +261,21 @@ export default function CreateGoalScreen() {
     <View style={s.safe}>
       <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
         <View style={s.container}>
-          <View style={s.header}>
-            <TouchableOpacity style={s.backBtn} onPress={handleBack}>
-              <Ionicons name="arrow-back" size={20} color="#3B5BDB" />
-            </TouchableOpacity>
-            <View style={s.headerCenter}>
-              <Text style={s.headerTitle}>
-                {step === 1 ? "Set Amount" : "Goal Details"}
-              </Text>
-              <Text style={s.headerStep}>STEP {step + 1} OF 3</Text>
-            </View>
-            <View style={s.headerPlaceholder} />
-          </View>
+          <Header
+            left={
+              <TouchableOpacity style={s.backBtn} onPress={handleBack}>
+                <Ionicons name="arrow-back" size={20} color="#3B5BDB" />
+              </TouchableOpacity>
+            }
+            center={
+              <View>
+                <Text style={s.headerTitle}>
+                  {step === 1 ? "Set Amount" : "Goal Details"}
+                </Text>
+                <Text style={s.headerStep}>STEP {step + 1} OF 3</Text>
+              </View>
+            }
+          />
 
           <View style={s.progressTrack}>
             <View
@@ -320,9 +328,9 @@ export default function CreateGoalScreen() {
             )}
           </LinearGradient>
         </TouchableOpacity>
-        <Text style={s.ctaNote}>
-          {step < 2 ? "STEP " + (step + 2) + " OF 3" : "YOU'RE ALL SET!"}
-        </Text>
+        {step === 2 && (
+          <Text style={s.ctaNote}>YOU'RE ALL SET!</Text>
+        )}
       </View>
     </View>
   );

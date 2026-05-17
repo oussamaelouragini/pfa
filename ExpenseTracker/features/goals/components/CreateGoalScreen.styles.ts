@@ -6,8 +6,8 @@ import { C } from "./GoalsScreen.styles";
 
 export const createStyles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: C.surface },
-  scroll: { flexGrow: 1, paddingBottom: 40 },
-  container: { paddingHorizontal: 22, paddingTop: 8 },
+  scroll: { flexGrow: 1, paddingBottom: 24 },
+  container: { paddingHorizontal: 20, paddingTop: 8 },
 
   // ── Header ──────────────────────────────────────────────────────────────────
   header: {
@@ -49,7 +49,7 @@ export const createStyles = StyleSheet.create({
     height: 4,
     backgroundColor: C.surfaceLow,
     borderRadius: 2,
-    marginBottom: 28,
+    marginBottom: 24,
     overflow: "hidden",
   },
   progressFill: {
@@ -120,39 +120,40 @@ export const createStyles = StyleSheet.create({
   // Amount
   amountWrapper: {
     backgroundColor: "#fff",
-    borderRadius: 24,
-    padding: 24,
+    borderRadius: 20,
+    padding: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   amountRow: { flexDirection: "row", alignItems: "baseline", gap: 4 },
-  amountDollar: { fontSize: 36, fontWeight: "700", color: "#3B5BDB" },
+  amountDollar: { fontSize: 28, fontWeight: "700", color: "#3B5BDB" },
   amountValue: {
-    fontSize: 64,
+    fontSize: 48,
     fontWeight: "800",
     color: "#0F172A",
     letterSpacing: -2,
+    minWidth: 100,
   },
   amountHint: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#94A3B8",
-    marginTop: 8,
+    marginTop: 6,
   },
   quickAmountsWrapper: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 10,
-    marginBottom: 16,
+    gap: 8,
+    marginBottom: 8,
   },
   quickAmountBtn: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
     backgroundColor: "#fff",
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
@@ -162,8 +163,8 @@ export const createStyles = StyleSheet.create({
     borderColor: "#3B5BDB",
   },
   quickAmountText: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "700",
     color: "#64748B",
   },
   quickAmountTextActive: {
@@ -282,7 +283,7 @@ export const createStyles = StyleSheet.create({
     backgroundColor: "#3B5BDB",
   },
 
-  // ── AI Estimation card ────────────────────────────────────────────────────────
+  // ── Estimation card ────────────────────────────────────────────────────────────
   aiCard: {
     backgroundColor: "#EEF2FF",
     borderRadius: 20,
@@ -302,7 +303,7 @@ export const createStyles = StyleSheet.create({
   aiLink: { fontWeight: "800", color: "#3B5BDB" },
 
   // ── CTA Button ────────────────────────────────────────────────────────────────
-  ctaWrapper: { paddingHorizontal: 22, marginBottom: 12, marginTop: 8 },
+  ctaWrapper: { paddingHorizontal: 20, marginBottom: 8, marginTop: 4 },
   ctaBtn: {
     height: 60,
     alignItems: "center",

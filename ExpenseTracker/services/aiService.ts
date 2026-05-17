@@ -1,12 +1,4 @@
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const AI_BASE_URL = `${process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000'}/ai`;
-
-async function getAuthHeader() {
-  const token = await AsyncStorage.getItem('accessToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+import apiClient from '@/lib/apiClient';
 
 export interface AIMessage {
   id: string;
@@ -40,28 +32,16 @@ export interface VoiceResponse extends ChatResponse {
 }
 
 export async function sendMessage(message: string): Promise<ChatResponse> {
-  const headers = await getAuthHeader();
-  const response = await axios.post(
-    `${AI_BASE_URL}/chat`,
-    { message },
-    { headers, timeout: 30_000 }
-  );
+  const response = await apiClient.post('/ai/chat', { message }, { timeout: 30_000 });
   return response.data;
 }
 
 export async function confirmAction(confirmed: boolean): Promise<ChatResponse> {
-  const headers = await getAuthHeader();
-  const response = await axios.post(
-    `${AI_BASE_URL}/confirm`,
-    { confirmed },
-    { headers, timeout: 15_000 }
-  );
+  const response = await apiClient.post('/ai/confirm', { confirmed }, { timeout: 15_000 });
   return response.data;
 }
 
 export async function sendVoiceMessage(audioUri: string, mimeType = 'audio/m4a'): Promise<VoiceResponse> {
-  const headers = await getAuthHeader();
-
   const formData = new FormData();
   formData.append('audio', {
     uri: audioUri,
@@ -69,23 +49,18 @@ export async function sendVoiceMessage(audioUri: string, mimeType = 'audio/m4a')
     name: `recording_${Date.now()}.m4a`,
   } as any);
 
-  const response = await axios.post(`${AI_BASE_URL}/voice`, formData, {
-    headers: {
-      ...headers,
-      'Content-Type': 'multipart/form-data',
-    },
+  const response = await apiClient.post('/ai/voice', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
     timeout: 60_000,
   });
   return response.data;
 }
 
 export async function resetConversation(): Promise<void> {
-  const headers = await getAuthHeader();
-  await axios.delete(`${AI_BASE_URL}/conversation`, { headers });
+  await apiClient.delete('/ai/conversation');
 }
 
 export async function getAIContext(): Promise<any> {
-  const headers = await getAuthHeader();
-  const response = await axios.get(`${AI_BASE_URL}/context`, { headers });
+  const response = await apiClient.get('/ai/context');
   return response.data;
 }

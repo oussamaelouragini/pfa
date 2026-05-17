@@ -9,11 +9,9 @@ import {
   AIMessage,
   ChatResponse,
 } from '../services/aiService';
-import {
-  startRecording,
-  stopRecording,
-  requestMicrophonePermission,
-} from '../services/voiceService';
+import { useVoiceRecorder } from './useVoiceRecorder';
+import { useTransactionStore } from '@/features/transactions/store/transactionStore';
+import { useGoalsStore } from '@/features/goals/store/goalsStore';
 
 export type MessageStatus = 'sending' | 'sent' | 'error';
 
@@ -26,12 +24,13 @@ export function useAIChat() {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'مرحباً! أنا مساعدك المالي الذكي. يمكنني مساعدتك في إدارة مصاريفك، تحليل إنفاقك، وتحقيق أهدافك المالية.\n\nHello! I\'m your AI financial copilot. How can I help you today? 💰',
+      content: "Hello! I'm your AI financial copilot. I can help you manage expenses, analyze your spending, and reach your financial goals. How can I help you today? 💰",
       type: 'message',
       timestamp: new Date(),
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const voice = useVoiceRecorder();
   const [isRecording, setIsRecording] = useState(false);
   const [hasPendingAction, setHasPendingAction] = useState(false);
   const pendingMessageIdRef = useRef<string | null>(null);
@@ -66,6 +65,9 @@ export function useAIChat() {
       } else if (response.type === 'action_completed' && response.executedAction) {
         assistantMsg.executedAction = response.executedAction;
         setHasPendingAction(false);
+        // Refresh all data stores so the UI reflects what the AI just did
+        useTransactionStore.getState().fetchTransactions();
+        useGoalsStore.getState().fetchGoals();
       } else {
         setHasPendingAction(false);
       }
@@ -135,19 +137,19 @@ export function useAIChat() {
   const startVoiceRecording = useCallback(async () => {
     if (isRecording || isLoading) return;
 
-    const hasPermission = await requestMicrophonePermission();
+    const hasPermission = await voice.requestPermission();
     if (!hasPermission) {
       Alert.alert('Permission Required', 'Microphone access is needed for voice input.');
       return;
     }
 
     try {
-      await startRecording();
+      await voice.startRecording();
       setIsRecording(true);
     } catch {
       Alert.alert('Error', 'Could not start recording. Please try again.');
     }
-  }, [isRecording, isLoading]);
+  }, [isRecording, isLoading, voice]);
 
   const stopVoiceRecording = useCallback(async () => {
     if (!isRecording) return;
@@ -156,7 +158,7 @@ export function useAIChat() {
     setIsLoading(true);
 
     try {
-      const audioUri = await stopRecording();
+      const audioUri = await voice.stopRecording();
       if (!audioUri) {
         setIsLoading(false);
         return;
@@ -180,7 +182,8 @@ export function useAIChat() {
       });
 
       handleAIResponse(response, placeholderId);
-    } catch {
+    } catch (e) {
+      console.error("[Voice] Error processing voice message:", e);
       addMessage({
         role: 'assistant',
         content: 'Could not process voice message. Please try typing instead.',
@@ -199,7 +202,7 @@ export function useAIChat() {
         {
           id: 'welcome',
           role: 'assistant',
-          content: 'Conversation cleared. How can I help you? 💰',
+          content: "Conversation cleared. How can I help you today? 💰",
           type: 'message',
           timestamp: new Date(),
         },

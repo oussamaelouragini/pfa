@@ -15,60 +15,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Header from "@/core/components/Header";
 import { CountryPickerModal } from "./CountryPickerModal";
 import { useEditProfile } from "../hooks/useEditProfile";
+import { useUser } from "@/providers/UserProvider";
 import { EC, es } from "./EditProfileScreen.styles";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── 1. Top Bar ────────────────────────────────────────────────────────────────
-function TopBar({
-  onBack,
-  onSave,
-  loading,
-}: {
-  onBack: () => void;
-  onSave: () => void;
-  loading: boolean;
-}) {
-  return (
-    <View style={es.topBar}>
-      <TouchableOpacity style={es.backBtn} onPress={onBack} activeOpacity={0.7}>
-        <Ionicons name="arrow-back" size={22} color={EC.onSurface} />
-      </TouchableOpacity>
-
-      <Text style={es.topBarTitle}>Edit Profile</Text>
-
-      <TouchableOpacity
-        style={[es.saveBtn, loading && es.saveBtnDisabled]}
-        onPress={onSave}
-        disabled={loading}
-        activeOpacity={0.7}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color={EC.primary} />
-        ) : (
-          <Text style={es.saveBtnText}>Save</Text>
-        )}
-      </TouchableOpacity>
-    </View>
-  );
-}
 
 // ── 2. Avatar Section ─────────────────────────────────────────────────────────
 function AvatarSection({
   fullName,
   avatarUri,
+  userId,
   onPickImage,
 }: {
   fullName: string;
   avatarUri: string | null;
+  userId: string;
   onPickImage: () => void;
 }) {
-  const userId = "294-883-2026";
-
   return (
     <View style={es.avatarSection}>
       <View style={es.avatarWrapper}>
@@ -83,7 +47,6 @@ function AvatarSection({
             <Ionicons name="person" size={46} color={EC.primary} />
           )}
         </TouchableOpacity>
-        {/* Camera button */}
         <TouchableOpacity style={es.cameraBtn} onPress={onPickImage} activeOpacity={0.8}>
           <Ionicons name="camera" size={14} color="#fff" />
         </TouchableOpacity>
@@ -217,10 +180,12 @@ function PhoneInputWithCountry({
 // Main Screen
 // ─────────────────────────────────────────────────────────────────────────────
 export default function EditProfileScreen() {
+  const { user } = useUser();
   const {
     form,
     errors,
     loading,
+    saveLoading,
     avatarUri,
     handleChange,
     handleSave,
@@ -233,8 +198,28 @@ export default function EditProfileScreen() {
     <View style={es.safe}>
       <StatusBar barStyle="dark-content" backgroundColor={EC.surface} />
 
-      {/* Top bar — fixed */}
-      <TopBar onBack={handleBack} onSave={handleSave} loading={loading} />
+      <Header
+        left={
+          <TouchableOpacity style={es.backBtn} onPress={handleBack} activeOpacity={0.7}>
+            <Ionicons name="arrow-back" size={22} color={EC.onSurface} />
+          </TouchableOpacity>
+        }
+        title="Edit Profile"
+        right={
+          <TouchableOpacity
+            style={[es.saveBtn, saveLoading && es.saveBtnDisabled]}
+            onPress={handleSave}
+            disabled={saveLoading}
+            activeOpacity={0.7}
+          >
+            {saveLoading ? (
+              <ActivityIndicator size="small" color={EC.primary} />
+            ) : (
+              <Text style={es.saveBtnText}>Save</Text>
+            )}
+          </TouchableOpacity>
+        }
+      />
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -245,14 +230,19 @@ export default function EditProfileScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* 1 — Avatar */}
           <AvatarSection
             fullName={form.fullName}
             avatarUri={avatarUri}
+            userId={user.id}
             onPickImage={pickImage}
           />
+          {loading && (
+            <View style={es.uploadingBadge}>
+              <ActivityIndicator size="small" color={EC.primary} />
+              <Text style={es.uploadingText}>Uploading image...</Text>
+            </View>
+          )}
 
-          {/* 2 — Full Name */}
           <FormField
             label="FULL NAME"
             value={form.fullName}
@@ -261,7 +251,6 @@ export default function EditProfileScreen() {
             placeholder="Enter your full name"
           />
 
-          {/* 3 — Phone */}
           <PhoneInputWithCountry
             label="PHONE NUMBER"
             value={form.phone}
@@ -271,7 +260,6 @@ export default function EditProfileScreen() {
             error={errors.phone}
           />
 
-          {/* 4 — Address */}
           <FormField
             label="RESIDENTIAL ADDRESS"
             value={form.address}

@@ -13,62 +13,6 @@ export const styles = StyleSheet.create({
 
   container: { paddingHorizontal: 20, paddingTop: 16 },
 
-  // ── Header ──────────────────────────────────────────────────────────────────
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  headerLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
-  avatarCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: "#3B5BDB",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  headerAvatarImage: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-  },
-  headerName: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#0F172A",
-    letterSpacing: -0.3,
-  },
-  headerRight: { flexDirection: "row", gap: 10 },
-  iconBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-
   // ── Balance Card ─────────────────────────────────────────────────────────────
   balanceCard: {
     backgroundColor: "#3B5BDB",

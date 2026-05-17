@@ -1,12 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "@/lib/apiClient";
-import { UserProfile } from "@/providers/UserProvider";
+
+export interface StoredUser {
+  id: string;
+  fullName: string;
+  email: string;
+}
 
 export const authService = {
   signIn: async (payload: {
     email: string;
     password: string;
-  }): Promise<UserProfile> => {
+  }): Promise<StoredUser> => {
     const response = await apiClient.post("/auth/login", payload);
     const { accessToken, id, email, name } = response.data;
 
@@ -15,28 +20,14 @@ export const authService = {
     await AsyncStorage.setItem("userEmail", email);
     await AsyncStorage.setItem("userName", name || email.split("@")[0]);
 
-    const userName = name || email.split("@")[0];
-
-    const user: UserProfile = {
-      id,
-      fullName: userName,
-      email,
-      phone: "",
-      countryCode: "+216",
-      address: "",
-      memberType: "STANDARD MEMBER",
-      avatarUri: null,
-      primaryCurrency: "TND",
-    };
-
-    return user;
+    return { id, fullName: name || email.split("@")[0], email };
   },
 
   signUp: async (payload: {
     fullName: string;
     email: string;
     password: string;
-  }): Promise<UserProfile> => {
+  }): Promise<StoredUser> => {
     const response = await apiClient.post("/auth/register", {
       name: payload.fullName,
       email: payload.email,
@@ -58,19 +49,26 @@ export const authService = {
     const userName = name || payload.fullName;
     await AsyncStorage.setItem("userName", userName);
 
-    const user: UserProfile = {
-      id: id || "",
-      fullName: userName,
-      email: email || payload.email,
-      phone: "",
-      countryCode: "+216",
-      address: "",
-      memberType: "STANDARD MEMBER",
-      avatarUri: null,
-      primaryCurrency: "TND",
-    };
+    return { id: id || "", fullName: userName, email: email || payload.email };
+  },
 
-    return user;
+  googleSignIn: async (
+    idToken: string,
+    platform: string
+  ): Promise<StoredUser> => {
+    const response = await apiClient.post("/auth/google", { idToken, platform });
+    const { token, refreshToken, user } = response.data;
+
+    await AsyncStorage.setItem("accessToken", token);
+    await AsyncStorage.setItem("userId", user.id);
+    await AsyncStorage.setItem("userEmail", user.email);
+    await AsyncStorage.setItem("userName", user.name || user.email.split("@")[0]);
+
+    return { id: user.id, fullName: user.name || user.email.split("@")[0], email: user.email };
+  },
+
+  forgotPassword: async (email: string): Promise<void> => {
+    await apiClient.post("/auth/forgot-password", { email });
   },
 
   logout: async (): Promise<void> => {
@@ -98,13 +96,11 @@ export const authService = {
       const newToken = response.data.accessToken;
       if (newToken) {
         await AsyncStorage.setItem("accessToken", newToken);
-        console.log("Token refreshed successfully");
         return newToken;
       }
       return null;
     } catch (error) {
       console.error("Token refresh failed:", error);
-      // Don't throw - let the caller handle the error
       return null;
     }
   },

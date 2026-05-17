@@ -29,6 +29,11 @@ export const goalApi = {
     return response.data.data;
   },
 
+  addSavings: async (id: string, amount: number) => {
+    const response = await apiClient.put<{ data: GoalData }>(`/goal/goals/${id}`, { savedAmount: amount });
+    return response.data.data;
+  },
+
   delete: async (id: string) => {
     const response = await apiClient.delete(`/goal/goals/${id}`);
     return response.data;

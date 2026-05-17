@@ -9,7 +9,7 @@ import { useUser } from "@/providers/UserProvider";
 export function useSignUp() {
   const router = useRouter();
   const { signIn } = useContext(AuthContext);
-  const { updateUser } = useUser();
+  const { updateUser, loadProfile } = useUser();
   const [form, setForm] = useState<SignUpPayload>({
     fullName: "",
     email: "",
@@ -35,15 +35,20 @@ export function useSignUp() {
     try {
       setLoading(true);
       const userData = await authService.signUp(form);
-      updateUser(userData);
+      updateUser({ id: userData.id, fullName: userData.fullName, email: userData.email });
+      await loadProfile();
       signIn();
-      router.replace("/");
+      router.replace("/home");
     } catch (error: any) {
-      console.error(error);
+      console.error("[SignUp] Error:", error.message || error);
       if (error.response?.data?.message) {
         setErrors({ email: error.response.data.message });
+      } else if (error.message === "Network Error" || error.message?.includes("Network")) {
+        setErrors({ email: "Cannot reach the server. Check your connection and ensure the backend is running." });
+      } else if (error.message?.includes("timeout") || error.message?.includes("timed out")) {
+        setErrors({ email: "Server took too long to respond. Please try again." });
       } else {
-        setErrors({ email: "Registration failed. Please try again." });
+        setErrors({ email: error.message || "Registration failed. Please try again." });
       }
     } finally {
       setLoading(false);

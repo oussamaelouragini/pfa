@@ -1,3 +1,4 @@
+import { useGoogleSignIn } from "@/features/auth/hooks/useGoogleSignIn";
 import { useSignIn } from "@/features/auth/hooks/useSignIn";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -26,6 +27,10 @@ export default function SignInForm() {
     handleSignIn,
   } = useSignIn();
 
+  const { googleLoading, handleGoogleSignIn, isConfigured } = useGoogleSignIn();
+
+  const isBusy = loading || googleLoading;
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -36,28 +41,22 @@ export default function SignInForm() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Top Bar: Logo + Back to website ── */}
-        <View style={styles.topBar}>
-          <View style={styles.logoRow}>
-            <View style={styles.logoCircle}>
-              <Ionicons name="wallet-outline" size={20} color="#fff" />
-            </View>
-            <Text style={styles.logoText}>Nexus</Text>
+        {/* ── Brand ── */}
+        <View style={styles.brand}>
+          <View style={styles.logoWrapper}>
+            <Ionicons name="wallet-outline" size={26} color="#3B5BDB" />
           </View>
-          <TouchableOpacity>
-            <Text style={styles.backText}>Back to website</Text>
-          </TouchableOpacity>
+          <Text style={styles.brandName}>EXPENSE TRACKER</Text>
         </View>
 
-        {/* ── White Card ── */}
-        <View style={styles.card}>
-          {/* Headline */}
-          <Text style={styles.headline}>Sign in</Text>
-          <Text style={styles.subtitle}>
-            Welcome back to your financial hub.
-          </Text>
+        {/* ── Headline ── */}
+        <Text style={styles.headline}>Sign In</Text>
+        <Text style={styles.subtitle}>
+          Welcome back to your financial hub.
+        </Text>
 
-          {/* ── Email ── */}
+        {/* ── Form ── */}
+        <View style={styles.form}>
           <Text style={styles.label}>Email Address</Text>
           <View
             style={[styles.inputWrapper, errors.email && styles.inputError]}
@@ -77,6 +76,7 @@ export default function SignInForm() {
               keyboardType="email-address"
               autoCapitalize="none"
               returnKeyType="next"
+              editable={!isBusy}
             />
           </View>
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
@@ -108,6 +108,7 @@ export default function SignInForm() {
               secureTextEntry={!showPassword}
               returnKeyType="done"
               onSubmitEditing={handleSignIn}
+              editable={!isBusy}
             />
             <TouchableOpacity
               onPress={() => setShowPassword((p) => !p)}
@@ -123,78 +124,64 @@ export default function SignInForm() {
           {errors.password && (
             <Text style={styles.errorText}>{errors.password}</Text>
           )}
+        </View>
 
-          {/* ── Sign In Button ── */}
+        {/* ── Sign In Button ── */}
+        <TouchableOpacity
+          style={[styles.ctaButton, isBusy && styles.ctaDisabled]}
+          onPress={handleSignIn}
+          disabled={isBusy}
+          activeOpacity={0.85}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Text style={styles.ctaText}>Sign In</Text>
+              <Ionicons
+                name="arrow-forward"
+                size={18}
+                color="#fff"
+                style={{ marginLeft: 8 }}
+              />
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* ── Google Sign-In ── */}
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>Or continue with</Text>
+          <View style={styles.dividerLine} />
+        </View>
+        <View style={styles.socialRow}>
           <TouchableOpacity
-            style={[styles.ctaButton, loading && styles.ctaDisabled]}
-            onPress={handleSignIn}
-            disabled={loading}
-            activeOpacity={0.85}
+            style={[styles.socialBtn, googleLoading && styles.socialDisabled]}
+            onPress={handleGoogleSignIn}
+            disabled={isBusy || !isConfigured}
+            activeOpacity={0.8}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
+            {googleLoading ? (
+              <ActivityIndicator color="#4285F4" />
             ) : (
               <>
-                <Text style={styles.ctaText}>Sign In</Text>
                 <Ionicons
-                  name="arrow-forward"
+                  name="logo-google"
                   size={18}
-                  color="#fff"
-                  style={{ marginLeft: 8 }}
+                  color="#4285F4"
+                  style={{ marginRight: 8 }}
                 />
+                <Text style={styles.socialText}>Google</Text>
               </>
             )}
           </TouchableOpacity>
-
-          {/* ── Divider ── */}
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* ── Social Buttons ── */}
-          <View style={styles.socialRow}>
-            {/* Google */}
-            <TouchableOpacity style={styles.socialBtn} activeOpacity={0.8}>
-              {/* Google G colored icon using text trick */}
-              <Text style={styles.googleG}>G</Text>
-              <Text style={styles.socialText}>Google</Text>
-            </TouchableOpacity>
-
-            {/* Apple */}
-            <TouchableOpacity style={styles.socialBtn} activeOpacity={0.8}>
-              <Ionicons
-                name="logo-apple"
-                size={20}
-                color="#000"
-                style={{ marginRight: 8 }}
-              />
-              <Text style={styles.socialText}>Apple</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* ── Footer: Create Account ── */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Dont have an account? </Text>
-            <TouchableOpacity onPress={() => router.push("/auth/sign-up")}>
-              <Text style={styles.footerLink}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
         </View>
 
-        {/* ── Bottom Links ── */}
-        <View style={styles.bottomLinks}>
-          <TouchableOpacity>
-            <Text style={styles.bottomLinkText}>Privacy Policy</Text>
-          </TouchableOpacity>
-          <Text style={styles.dot}>•</Text>
-          <TouchableOpacity>
-            <Text style={styles.bottomLinkText}>Terms of Service</Text>
-          </TouchableOpacity>
-          <Text style={styles.dot}>•</Text>
-          <TouchableOpacity>
-            <Text style={styles.bottomLinkText}>Help Center</Text>
+        {/* ── Footer ── */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("/auth/sign-up")}>
+            <Text style={styles.footerLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

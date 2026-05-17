@@ -6,14 +6,13 @@ import { useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
-  Image,
   ScrollView,
   StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useUser } from "@/providers/UserProvider";
+import Header from "@/core/components/Header";
 import { useStats } from "../hooks/useStats";
 import type {
   ChartDataPoint,
@@ -26,32 +25,17 @@ import { CHART_HEIGHT, styles } from "./StatsScreen.styles";
 // Sub-components
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── 1. Header ─────────────────────────────────────────────────────────────────
-function Header() {
-  const { user } = useUser();
+function StatsHeader() {
   const router = useRouter();
-
   return (
-    <View style={styles.header}>
-      <TouchableOpacity style={styles.backBtn} onPress={() => router.push("/(tabs)/")} activeOpacity={0.7}>
-        <Ionicons name="arrow-back" size={22} color="#0F172A" />
-      </TouchableOpacity>
-      <View style={styles.headerLeft}>
-        <View style={styles.avatarCircle}>
-          {user.avatarUri ? (
-            <Image source={{ uri: user.avatarUri }} style={styles.headerAvatarImage} />
-          ) : (
-            <Ionicons name="person" size={22} color="#fff" />
-          )}
-        </View>
-        <Text style={styles.headerName}>{user.fullName}</Text>
-      </View>
-      <View style={styles.headerRight}>
-        <TouchableOpacity style={styles.iconBtn}>
+    <Header
+      showBack
+      right={
+        <Header.IconBtn onPress={() => router.push("/(tabs)/notifications")}>
           <Ionicons name="notifications-outline" size={20} color="#475569" />
-        </TouchableOpacity>
-      </View>
-    </View>
+        </Header.IconBtn>
+      }
+    />
   );
 }
 
@@ -123,9 +107,7 @@ function BarChart({
       <View style={styles.chartTopRow}>
         <View>
           <Text style={styles.chartLabel}>Income vs Expenses</Text>
-          <Text style={styles.chartAmount}>
-            {totalIncomeLabel}
-          </Text>
+          <Text style={styles.chartAmount}>{totalIncomeLabel}</Text>
         </View>
         <View style={styles.legendRow}>
           <View style={[styles.legendDot, { backgroundColor: "#16A34A" }]} />
@@ -135,7 +117,8 @@ function BarChart({
         </View>
       </View>
 
-      {data.length === 0 || data.every((d) => d.income === 0 && d.expense === 0) ? (
+      {data.length === 0 ||
+      data.every((d) => d.income === 0 && d.expense === 0) ? (
         <View style={styles.chartEmpty}>
           <Ionicons name="bar-chart-outline" size={32} color="#CBD5E1" />
           <Text style={styles.chartEmptyText}>No data for this period</Text>
@@ -280,7 +263,7 @@ export default function StatsScreen() {
       >
         <View style={styles.container}>
           {/* 1 — Header */}
-          <Header />
+          <StatsHeader />
 
           {/* 2 — Balance Card */}
           <BalanceCard balance={balance} formatBalance={formatBalance} />
@@ -292,7 +275,10 @@ export default function StatsScreen() {
           </View>
 
           {/* 4 — Bar Chart */}
-          <BarChart data={chartData} totalIncomeLabel={formatBalance(totalIncome)} />
+          <BarChart
+            data={chartData}
+            totalIncomeLabel={formatBalance(totalIncome)}
+          />
 
           {/* 5 — Summary Cards */}
           <SummaryCards cards={summaryCards} formatShort={formatShort} />

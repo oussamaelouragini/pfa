@@ -7,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -16,6 +15,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ScreenWrapper from "@/core/components/ScreenWrapper";
+import Header from "@/core/components/Header";
 import { useCurrency } from "@/providers/CurrencyProvider";
 import { formatAmount as fmtAmount } from "@/utils/currency";
 
@@ -68,17 +69,10 @@ export default function AllTransactionsScreen() {
     : sortedTransactions;
 
   return (
-    <SafeAreaView style={s.safe}>
+    <ScreenWrapper backgroundColor="#ECEEF5" edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" backgroundColor="#ECEEF5" />
       
-      {/* Header */}
-      <View style={s.header}>
-        <TouchableOpacity style={s.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={22} color="#0F172A" />
-        </TouchableOpacity>
-        <Text style={s.headerTitle}>All Transactions</Text>
-        <View style={s.placeholder} />
-      </View>
+      <Header showBack title="All Transactions" />
 
       {/* Search Bar */}
       <View style={s.searchWrapper}>
@@ -126,36 +120,12 @@ export default function AllTransactionsScreen() {
           ))
         )}
       </ScrollView>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 }
 
 const s = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#ECEEF5" },
   scroll: { padding: 20, paddingBottom: 100 },
-  
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  backBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  headerTitle: { fontSize: 20, fontWeight: "800", color: "#0F172A" },
-  placeholder: { width: 44 },
 
   searchWrapper: {
     flexDirection: "row",

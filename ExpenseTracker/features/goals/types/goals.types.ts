@@ -12,6 +12,7 @@ export interface GoalData {
   frequency: string;
   category: GoalCategoryData;
   target: number;
+  savedAmount?: number;
   createdAt: string;
   updatedAt: string;
 }

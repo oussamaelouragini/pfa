@@ -34,12 +34,18 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
-// modules/users/user.model.ts
 const mongoose_1 = __importStar(require("mongoose"));
 const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
-    password: { type: String, required: true }, // bcrypt hash
+    password: { type: String },
     name: { type: String, required: true, maxlength: 100 },
+    phone: { type: String, default: '' },
+    countryCode: { type: String, default: '+216' },
+    address: { type: String, default: '' },
+    avatarUrl: { type: String, default: null },
+    primaryCurrency: { type: String, default: 'TND' },
+    memberType: { type: String, default: 'STANDARD MEMBER' },
+    authProvider: { type: String, default: null },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model('User', UserSchema);
 //# sourceMappingURL=users.js.map

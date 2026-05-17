@@ -22,28 +22,13 @@ export const es = StyleSheet.create({
   safe: { flex: 1, backgroundColor: EC.surface },
   scroll: { flexGrow: 1, paddingBottom: 40 },
 
-  // ── Top Bar ──────────────────────────────────────────────────────────────────
-  topBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: EC.surface,
-  },
+  // ── Header ──────────────────────────────────────────────────────────────────
   backBtn: {
     width: 38,
     height: 38,
     borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
-  },
-  topBarTitle: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: EC.onSurface,
-    letterSpacing: -0.3,
   },
   saveBtn: {
     paddingHorizontal: 4,
@@ -194,5 +179,20 @@ export const es = StyleSheet.create({
     color: EC.onSurface,
     paddingHorizontal: 18,
     paddingVertical: 16,
+  },
+
+  // ── Uploading Badge ─────────────────────────────────────────────────────────
+  uploadingBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  uploadingText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: EC.primary,
   },
 });

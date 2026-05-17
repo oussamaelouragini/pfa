@@ -7,7 +7,7 @@ import EditProfileScreen from "@/features/profile/components/EditProfileScreen";
 
 export default function EditProfileRoute() {
   return (
-    <ScreenWrapper backgroundColor="#F0F2F8">
+    <ScreenWrapper backgroundColor="#F0F2F8" edges={["top", "left", "right"]}>
       <EditProfileScreen />
     </ScreenWrapper>
   );
